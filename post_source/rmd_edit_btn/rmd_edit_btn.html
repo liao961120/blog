@@ -1,0 +1,109 @@
+
+
+
+<!--For external images, set self_contained: false-->
+<!--yaml
+---
+mermaid: false
+mathjax: false
+mathjax_autoNumber: false
+highlight: true
+title: 'Inserting “Edit on GitHub” Buttons in a Single R Markdown Document'
+description: ""
+tags: ['R', 'R Markdown', 'R-bloggers']
+---
+yaml-->
+<p>As the R Markdown ecosystem becomes larger, users now may encounter situations where they have to make decisions on which output format of R Markdown to use.
+One may found <strong>none of the formats suitable</strong> – the features essential to the output document one wants may scatter across different output formats of R Markdown.</p>
+<p>Here is a real example I encountered. I wanted to create a document that:</p>
+<ol class="example" style="list-style-type: decimal">
+<li>supports <a href="https://bookdown.org/yihui/bookdown/markdown-extensions-by-bookdown.html">bookdown syntax</a>, e.g. text references</li>
+<li>has an “Edit on GitHub” button for every chapter that links to the edit page of the source <code>.Rmd</code> on GitHub</li>
+</ol>
+<p>The two features above can be obtained easily with bookdown’s default GitBook output format, but one more feature is essential to the document I want:</p>
+<ol start="3" class="example" style="list-style-type: decimal">
+<li>A document that supports <a href="https://bookdown.org/yihui/rmarkdown/html-document.html#tabbed-sections">tabbed sections</a><a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></li>
+</ol>
+<p>So basically, I wanted <code>bookdown::gitbook</code> that supports tabbed sections, shown in Fig. <a href="#fig:gitbook">1</a>. However, it’s not possible. This is a feature unique to <code>rmarkdown::html_document</code>, <a href="https://github.com/rstudio/bookdown/issues/393">not <code>bookdown::gitbook</code></a>.</p>
+<div class="figure"><span id="fig:gitbook"></span>
+<img src="/post_source/rmd_edit_btn/book_tabset.png" alt="`bookdown::gitbook` supports tabbed sections? This is just a fake figure." width="100%" />
+<p class="caption">
+Figure 1: <code>bookdown::gitbook</code> supports tabbed sections? This is just a fake figure.
+</p>
+</div>
+<p>Now I have to find a way, not provided by the default output formats of R Markdown, to create a document with the above three features.
+My first thought was to find out how to add the tabbed sections feature to <code>bookdown::gitbook</code> via JavaScript, but since I’m not familiar with JS, I gave up JavaScript and decided to use the “<strong>native</strong>” R Markdown approach.
+I turned to <code>bookdown::html_document2</code>, which is based on <code>rmarkdown::html_document</code> (supports tabbed sections).</p>
+<p>The <a href="https://github.com/liao961120/parallelCode">source repo of my document</a> is a bookdown project, which has <strong>several <code>.Rmd</code> files</strong>.
+Each <code>.Rmd</code> file starts with a level-one heading and defines a single chapter. Since I wanted tabbed sections from <code>rmarkdown::html_document</code>, I have to use <code>bookdown::html_document2</code> as the output format, which creates a single HTML output file.</p>
+<div id="adding-to-level-one-headings" class="section level2">
+<h2>Adding <img src='https://bit.ly/2RRirG7' alt='fa-edit' style='display:inline-block;height: 1em;margin-bottom:0'> to Level-one Headings</h2>
+<p>Setting <code>bookdown::html_document2</code> as the output format creates a single document output (as opposed to <code>bookdown::gitbook</code> which creates several HTML files by default),
+so if I want to add an “Edit on GitHub” button for every chapter, I have to track the <strong>original <code>.Rmd</code> that generates the particular chapter</strong>.</p>
+<div id="merge-and-knit-vs.-knit-and-merge" class="section level3">
+<h3>“Merge and Knit” vs. “Knit and Merge”</h3>
+<p>There are <a href="https://bookdown.org/yihui/bookdown/new-session.html">two rendering approaches</a> in bookdown. The default is <strong>Merge and Knit</strong>, which combines all source <code>.Rmd</code> files into one single <code>.Rmd</code> file <strong>then</strong> knits the document.
+In this case, it would be impossible to track the source <code>.Rmd</code> file for each chapter (unless I create a lookup table manually).</p>
+<p>I can track the source <code>.Rmd</code> files easily, however, if the document is rendered using the <strong>Knit and Merge</strong> approach. When using the <strong>Knit and Merge</strong> approach, the code chunks in the source <code>.Rmd</code> files are run and the results embedded <strong>before</strong> the documents get combined together in a single output file. This mean that I can retrieve the source <code>.Rmd</code> file name while knitting the file (by <code>knitr::current_input()</code>). This gives me all I need to create the link to the edit page of the <code>.Rmd</code> source file on GitHub.</p>
+</div>
+<div id="bookdownyml" class="section level3">
+<h3>Setting up: <code>_bookdown.yml</code></h3>
+<p>To switch from the default “<strong>Merge and Knit</strong>” to “<strong>Knit and Merge</strong>”, set <code>new_session: yes</code> in <code>_bookdown.yml</code>:</p>
+<pre class="sourceCode yaml"><code class="sourceCode yaml"><span class="fu">new_session:</span><span class="at"> yes</span>
+<span class="fu">before_chapter_script:</span><span class="at"> </span><span class="st">&#39;addons/pre_chap.R&#39;</span></code></pre>
+</div>
+<div id="setting-up-addonspre_chap.r" class="section level3">
+<h3>Setting up: <code>addons/pre_chap.R</code></h3>
+<p>To insert the link to the edit page on GitHub, put <code>`r edit_btn`</code> (inline R code) at the end of the h1 heading of each <code>.Rmd</code> file, for <a href="https://github.com/liao961120/parallelCode/blob/4ea55dba03feef91ecf12e1014000fedabcc184b/00-functional_programming.Rmd#L1">example</a>:</p>
+<pre class="sourceCode markdown"><code class="sourceCode markdown"><span class="fu"># Function Factories `r edit_btn`</span></code></pre>
+<p><code>edit_btn</code> is a string variable holding the link<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> to GitHub. It is computed in the R script <code>addons/pre_chap.R</code>, which is run every time before knitting a <code>.Rmd</code> file:</p>
+<pre class="sourceCode r"><code class="sourceCode r">url &lt;-<span class="st"> &#39;https://github.com/liao961120/parallelCode/edit/master/&#39;</span>
+gh_edit_path &lt;-<span class="st"> </span><span class="kw">paste0</span>(url, knitr<span class="op">::</span><span class="kw">current_input</span>())
+
+edit_btn &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&#39;&lt;a href=&quot;&#39;</span>, gh_edit_path, <span class="st">&#39;&quot;&gt;&#39;</span>,
+                   <span class="st">&#39;&lt;img src=&quot;https://bit.ly/2RRirG7&quot; &#39;</span>,
+                   <span class="st">&#39;alt=&quot;fa-edit&quot; &#39;</span>,
+                   <span class="st">&#39;class=&quot;edit&quot;&gt;&lt;/a&gt;&#39;</span>)</code></pre>
+<p>To make <code>addons/pre_chap.R</code> run every time before knitting a <code>.Rmd</code> file, include it in the <code>before_chapter_script</code> field in <code>_bookdown.yml</code>, as shown in the section, <a href="#bookdownyml">Setting up: <code>_bookdown.yml</code></a>, above.</p>
+</div>
+<div id="setting-up-_output.yml" class="section level3">
+<h3>Setting up: <code>_output.yml</code></h3>
+<p>This is the output format I set in <code>_output.yml</code>:</p>
+<pre class="sourceCode yaml"><code class="sourceCode yaml"><span class="fu">bookdown:</span><span class="at">:html_document2:</span>
+  <span class="fu">theme:</span><span class="at"> readable</span>
+  <span class="fu">highlight:</span><span class="at"> default</span>
+  <span class="fu">toc:</span><span class="at"> true</span>
+  <span class="fu">toc_depth:</span><span class="at"> 2</span>
+  <span class="fu">toc_float:</span>
+    <span class="fu">collapsed:</span><span class="at"> false</span>
+  <span class="fu">css:</span><span class="at"> addons/style.css</span>
+  <span class="fu">self_contained:</span><span class="at"> false</span></code></pre>
+</div>
+</div>
+<div id="path-problems-caused-by-self_contained-false" class="section level2">
+<h2>Path Problems Caused by <code>self_contained: false</code></h2>
+<p>You may notice that I set <code>self_contained: false</code> in <code>_output.yml</code>. This isn’t necessary<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a> and it actually makes things a little more complicated, since, when using <code>bookdown::html_document2</code> as the output format, bookdown generates all its dependencies (CSS, JS libraries, figures, etc) in <code>_bookdown_files</code> and generates its ouput HTML file in the project root directory but doesn’t move the dependencies and the output HTML to the output directory (defaults to <code>_book</code>) nor modify the relative path to dependency files in the output HTML. This causes the links in the output HTML to break.</p>
+<p>To fix this, I wrote a <a href="https://github.com/liao961120/parallelCode/blob/master/build.sh">bash script</a> to move the output files<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a> to the correct places:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">mv</span> out.html _bookdown_files/index.html
+<span class="kw">[[</span> <span class="ot">-e</span> out.rds<span class="kw"> ]]</span> <span class="kw">&amp;&amp;</span> <span class="fu">mv</span> out.rds _bookdown_files/
+<span class="fu">cp</span> -r addons/ _bookdown_files/
+
+<span class="kw">[[</span> <span class="ot">-d</span> docs<span class="kw"> ]]</span> <span class="kw">&amp;&amp;</span> <span class="fu">rm</span> -r docs
+<span class="fu">mv</span> _bookdown_files docs</code></pre>
+<p>For users who don’t use bash, R can be used instead. Check out <a href="http://theautomatic.net/2018/07/11/manipulate-files-r/">this post about file manipulation in R</a>.</p>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>The reason I wanted this feature is that I’m writing a document that works like a <a href="https://en.wikipedia.org/wiki/Parallel_text">parallel text</a>.</p>
+<p>I know three programming languages – R, Bash, and Python, but I’m only familiar with R, struggle with the weird syntax of Bash sometimes (that said, I like Bash pretty much, for its power to do quick and dirty works), and don’t use Python often enough to memorize commonly used syntax.</p>
+<p>By creating a <a href="https://liao961120.github.io/parallelCode">parallel text for R, Bash, and Python</a>, I can write down the code to deal with some common tasks in these three langauges, so I don’t have to look it up on google every time I forgot the syntax of the langauge.</p>
+<p>I planned to write this document myself initially. But why not do a little more work to make it convenient for others to contribute to this document? This is why I decided to add an “Edit on GitHub” button at the start of every chapter of the document.<a href="#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn2"><p><code>edit_btn</code> holds a <code>&lt;a&gt;</code> tag with <code>&lt;img&gt;</code> tag in it. The style of <code>img.edit</code> is defined in <a href="https://github.com/liao961120/parallelCode/blob/907a6c760e7b447bdd12074db785d89455e4009d/addons/style.css#L59-L69"><code>addons/style.css</code></a>. I didn’t use <a href="https://fontawesome.com">fontawesome</a> for the edit icon <img src='https://bit.ly/2RRirG7' alt='fa-edit' style='display:inline-block;height: 1em;margin-bottom:0'>, since <code>bookdown::html_document2</code> doesn’t support it and I don’t want to introduce another dependency. I use <code>&lt;img&gt;</code> tag to source the edit icon from <a href="https://commons.wikimedia.org/wiki/File:Edit_font_awesome.svg">wikimedia</a> instead.<a href="#fnref2" class="footnote-back">↩</a></p></li>
+<li id="fn3"><p>I set <code>self_contained</code> to <code>false</code> because I didn’t want a large output file that takes too much time to load in the browser.<a href="#fnref3" class="footnote-back">↩</a></p></li>
+<li id="fn4"><p>Note that I changed some default filenames by adding some lines in <code>_bookdown.yml</code>:</p>
+<pre class="sourceCode yaml"><code class="sourceCode yaml"><span class="fu">book_filename:</span><span class="at"> </span><span class="st">&quot;out&quot;</span><span class="er">  # output HTML filename</span>
+<span class="fu">output_dir:</span><span class="at"> </span><span class="st">&quot;docs&quot;</span><span class="er">    # output dir, defaults to `_book`</span></code></pre>
+<a href="#fnref4" class="footnote-back">↩</a></li>
+</ol>
+</div>

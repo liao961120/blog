@@ -1,0 +1,52 @@
+---
+link-citations: yes
+output:
+  html_fragment:
+    self_contained: false
+    includes:
+    number_sections: no
+---
+<!--For external images, set self_contained: false-->
+
+<!--yaml
+---
+mermaid: false
+mathjax2: false
+mathjax: false
+highlight: true
+title: "Easy Linguistics Document Writing with R Markdown"
+description: "Easy Linguistics Document Writing with R Markdown"
+tags: [Linguistics, R Markdown, R, R-bloggers]
+---
+yaml-->
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	fig.dim = c(7, 4),
+	message = FALSE,
+	warning = FALSE,
+	comment = "",
+	#fig.path = "../../assets/",
+	out.width = "100%"
+)
+library(knitr)
+```
+
+I've written [a post](https://liao961120.github.io/2018/09/06/ipa-symbols.html) about rendering IPA symbols properly regardless of the output format of the R Markdown document.
+I implemented the ideas into an R package, **linguisticsdown**.
+<!--more-->
+
+**linguisticsdown** provides a Shiny interface to facilitate
+inserting IPA symbols in R Markdown. 
+See a quick demo of the current feature of **linguisticsdown** in the gif at the end of the post.
+
+A [live demo](https://liao961120.shinyapps.io/IPA-Easily-Written/) is hosted on shinyapps.io. For more details, 
+visit [**linguisticsdown**](https://liao961120.github.io/linguisticsdown/).
+
+
+
+![](https://liao961120.github.io/linguisticsdown/man/figs/features.gif)
+
+
+

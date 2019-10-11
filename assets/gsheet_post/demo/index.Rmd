@@ -1,0 +1,61 @@
+---
+title: "Google 表單即時回饋示範"
+date: "`r Sys.Date()`"
+author: "Yongfu, Liao"
+output: 
+    html_document:
+        css: style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = FALSE,
+	message = FALSE,
+	warning = FALSE
+)
+source("bootstrap_fc.R")
+date <- lubridate::with_tz(Sys.time(), tzone = "Asia/Taipei")
+library(htmltools)
+```
+
+
+此為 google 表單分數即時回饋的示範平台，配合[此篇文章](https://liao961120.github.io/2018/04/20/gsheet_survey)。
+
+<br>
+請先點選下方「填寫表單」以填寫問卷，問卷最後會要求你輸入 **Token**。  
+此 **Token** 是用來查詢問卷分數的，請將其記下。
+
+
+```{r}
+# Button trigger modal
+button_bs("填寫表單", data_toggle="modal", data_target="#sheet", class="success pull-left")
+```
+
+```{r}
+# iframe for Google Form
+iframe <- HTML('<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSeE-ke7yhlU3XRDIhw7vRL-mnYLi-jTOYF8Pz4ZLINjV53z2A/viewform?embedded=true" style="position: relative; height: 380px; width: 100%;" frameborder="0" marginheight="0" marginwidth="0">載入中…</iframe>')
+
+modal(id="sheet", modal_header = "Google 表單", modal_body=iframe, foot=F)
+```
+
+
+<br><br><br>
+
+以下按鈕開啟 DataCamp Light, 為輔助程式語言教學與學習的工具，可在其中執行 code。  
+開啟後，DataCamp Light 已預先讀入資料。您僅需於`score()`中輸入金鑰。
+例如，若您於問卷中 **Token** 那題填寫「abcde123」，請輸入`score("abcde123")`。  
+若查無結果，請按**查詢視窗**右下方的`Reload`按鈕。
+
+```{r}
+# Button trigger modal: search
+button_bs("查詢結果", data_toggle="modal", data_target="#search", class="primary pull-left")
+```
+
+```{r}
+# iframe for Search
+iframe <- HTML('
+<iframe id="search_iframe" src="./search.html" style="position: relative; height: 380px; width: 100%;" frameborder="0" marginheight="0" marginwidth="0">載入中…</iframe>')
+
+modal(id="search", modal_header = "查詢結果", modal_body=iframe, foot=F)
+```
+

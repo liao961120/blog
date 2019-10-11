@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <title>奖励人辞职 - Yihui Xie | 谢益辉</title>
+    <meta property="og:title" content="奖励人辞职 - Yihui Xie | 谢益辉">
+    
+    <meta name="twitter:card" content="summary">
+
+    
+      
+    
+
+    
+      
+      <meta property="description" content="2012 年我看到一篇关于 Zappos 谢家华的文章，里面有一段尤其引人注意：
+[&amp;hellip;] 培训的第一个星期，Zappos 称其为“出价”时间，这些新员工将被告知：“如果你今天辞职，我们会按你的工作时间付你薪水，另外我们还提供 1000 美元奖金。”
+[&amp;hellip;] 这个人的招数都奇特，而细想一下这里面的逻辑却又非常精妙，不过我觉得他的胆识真的太出众了。
+其实有时候我都想出钱请那 &amp;hellip;">
+      <meta property="og:description" content="2012 年我看到一篇关于 Zappos 谢家华的文章，里面有一段尤其引人注意：
+[&amp;hellip;] 培训的第一个星期，Zappos 称其为“出价”时间，这些新员工将被告知：“如果你今天辞职，我们会按你的工作时间付你薪水，另外我们还提供 1000 美元奖金。”
+[&amp;hellip;] 这个人的招数都奇特，而细想一下这里面的逻辑却又非常精妙，不过我觉得他的胆识真的太出众了。
+其实有时候我都想出钱请那 &amp;hellip;">
+      
+    
+
+    
+    
+    
+    <meta name="twitter:image" content="https://yihui.name/images/logo.png">
+    
+    
+
+    
+
+    
+    
+
+    <link rel='stylesheet' href='https://d33wubrfki0l68.cloudfront.net/bundles/175e6b890d45127f0a41cca38797aa2b47bffb50.css'/>
+    
+    
+<script async src='https://d33wubrfki0l68.cloudfront.net/js/fc337d56a4a439ad008258a26ae805d68f352def/js/load-typekit.js'></script>
+
+
+<link rel='stylesheet' href='https://d33wubrfki0l68.cloudfront.net/css/ffa31e9e1d47e75fd5d8c32ff6db8890d1131439/css/custom.css'/>
+
+  </head>
+
+  
+  <body class="cn">
+    <header class="masthead">
+      
+
+<h1><a href="/"><img src="https://d33wubrfki0l68.cloudfront.net/42023922872cca83b20851f15088d1fd4236d084/e41a8/images/logo.png" alt="Yihui Xie" /></a></h1>
+
+
+
+      <nav class="menu">
+  <ul>
+  
+  
+  <li><a href="/">首页</a></li>
+  
+  <li><a href="/cn/about/">关于</a></li>
+  
+  <li><a href="/cn/">博客</a></li>
+  
+  <li><a href="/cn/vitae/">简历</a></li>
+  
+  <li><a href="/cn/recipe/">菜谱</a></li>
+  
+  <li><a href="/en/">English</a></li>
+  
+  
+
+<li class="menu-extra"></li>
+
+
+
+<li><a href="https://github.com/rbind/yihui/edit/master/content/cn/2018-01-02-quit-award.md" target="_blank">编辑</a></li>
+
+
+<li><a href="/cn/index.xml" type="application/rss+xml" title="RSS feed">订阅</a></li>
+
+<li><a href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="Attribution-NonCommercial-ShareAlike 4.0 International">版权</a></li>
+
+
+  </ul>
+</nav>
+
+    </header>
+
+    <article class="main">
+      <header class="title">
+      
+<h1>奖励人辞职</h1>
+
+
+<h3>谢益辉 / 
+2018-01-02</h3>
+
+<hr>
+
+
+      </header>
+
+
+
+<p><a href="https://github.com/yihui/ideas/issues/28">2012 年</a>我看到一篇关于 <a href="http://tech.qq.com/a/20090802/000013.htm">Zappos 谢家华的文章</a>，里面有一段尤其引人注意：</p>
+
+<blockquote>
+<p>培训的第一个星期，Zappos 称其为“出价”时间，这些新员工将被告知：“如果你今天辞职，我们会按你的工作时间付你薪水，另外我们还提供 1000 美元奖金。”</p>
+</blockquote>
+
+<p>这个人的招数都奇特，而细想一下这里面的逻辑却又非常精妙，不过我觉得他的胆识真的太出众了。</p>
+
+<p>其实有时候我都想出钱请那些报告软件问题以及功能请求的人自己关掉报告。我指的只是那些琐碎问题和功能，即我不处理不会死人的那种，而堆在我肩上让我时时感到有做不完的工作。只有那些不肯领钱离开的人，我才去投入精力解决他们的问题。</p>
+
+
+  <footer>
+  
+<nav class="post-nav">
+  <span class="nav-prev">&larr; <a href="/cn/2018/01/represented/">正面和负面被代表</a></span>
+  <span class="nav-next"><a href="/cn/2018/01/r-web-sprout/">基于 R 做网站/网页的萌芽</a> &rarr;</span>
+</nav>
+<script type="text/javascript">
+document.addEventListener('keyup', function(e) {
+  if (e.target.nodeName.toUpperCase() != 'BODY') return;
+  var url = false;
+  if (e.which == 37) {  
+    
+    url = '\/cn\/2018\/01\/represented\/';
+    
+  } else if (e.which == 39) {  
+    
+    url = '\/cn\/2018\/01\/r-web-sprout\/';
+    
+  }
+  if (url) window.location = url;
+});
+</script>
+
+
+
+<section class="comments">
+  <div id="disqus_thread"></div>
+  <script>
+  var disqus_config = function () {
+  
+    this.page.url = "http:\/\/yihui.name" + location.pathname;
+  
+  };
+  (function() {
+    var inIFrame = function() {
+      var iframe = true;
+      try { iframe = window.self !== window.top; } catch (e) {}
+      return iframe;
+    };
+    if (inIFrame()) return;
+    var disqus_js = '//yihui.disqus.com/embed.js';
+    var d = document, s = d.createElement('script');
+    s.src = disqus_js; s.async = true;
+    s.setAttribute('data-timestamp', +new Date());
+    var b = false, l = function() {
+      if (b) return;
+      (d.head || d.body).appendChild(s); b = true;
+    }
+    
+    if (location.hash.match(/^#comment/)) return(l());
+    var t = d.getElementById('disqus_thread');
+    var c = function() {
+      if (b) return;
+      var rect = t.getBoundingClientRect();
+      if (rect.top < window.innerHeight && rect.bottom >= 0) l();
+    };
+    window.addEventListener('load', c);
+    d.addEventListener('scroll', c);
+  })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+
+
+<script async src='https://d33wubrfki0l68.cloudfront.net/bundles/0c869cda57dbf381b70ed47277047b39f091d8e5.js'></script>
+
+
+
+
+  
+
+  
+  <hr>
+  <div class="copyright">&copy; <a href="/">Yihui Xie</a> 2005 - 2018</div>
+  
+  </footer>
+  </article>
+  
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-1988641-2', 'auto');
+ga('send', 'pageview');
+</script>
+
+  </body>
+</html>
+

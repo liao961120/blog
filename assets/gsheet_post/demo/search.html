@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdn.datacamp.com/datacamp-light-latest.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>DataCamp Light
+    </title>
+</head>
+
+<body>
+
+    <div data-datacamp-exercise data-lang="r">
+        <code data-type="pre-exercise-code">
+                    library(googlesheets)
+                    data <- gs_read(gs_url("https://docs.google.com/spreadsheets/d/1ufuzTL9VCxdvX1QeFQcMGxYbEMq1ZEWVht3CEDpXBmc/edit?usp=sharing"))
+        
+                    data <- as.data.frame(data)
+                    colnames(data) <- c("DateTime", "Token", "Score")
+                    data <- data[which(!is.na(data$DateTime)),]
+                    score <- function(token) {
+                        i <- which(data$Token==token)
+                        data[i,]
+                    }
+                </code>
+        <code data-type="sample-code">
+                    # Put Token in "". Ex: score("abcde123")
+                    score("Enter_your_Token")
+                </code>
+    </div>
+
+    <button type="button" class="btn btn-outline-secondary btn-xs pull-right" onclick="myFunction()">Reload</button>
+    <script>
+        function myFunction() {
+            window.location.reload(true);
+            //location.reload(true);
+        }
+    </script>
+</body>
+
+</html>

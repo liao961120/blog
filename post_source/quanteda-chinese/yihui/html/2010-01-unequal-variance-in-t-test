@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <title>t检验方差不齐有多重要 - Yihui Xie | 谢益辉</title>
+    <meta property="og:title" content="t检验方差不齐有多重要 - Yihui Xie | 谢益辉">
+    
+    <meta name="twitter:card" content="summary">
+
+    
+      
+    
+
+    
+      
+      <meta property="description" content="传统统计教科书大多会提及t检验中方差齐性这个问题，因为检验的假设条件是需要总体方差相等的。然而这个问题实际上可能并没有人们想象的那么重要，这里给两个简单的数值计算结果，看看方差不等对检验结果有什么影响。
+par(mar = c(4, 4, 0.5, 0.5), mfrow = c(1, 2)) set.seed(123) plot(pval &amp;lt;- t(replicate(1000, { x1 &amp;hellip;">
+      <meta property="og:description" content="传统统计教科书大多会提及t检验中方差齐性这个问题，因为检验的假设条件是需要总体方差相等的。然而这个问题实际上可能并没有人们想象的那么重要，这里给两个简单的数值计算结果，看看方差不等对检验结果有什么影响。
+par(mar = c(4, 4, 0.5, 0.5), mfrow = c(1, 2)) set.seed(123) plot(pval &amp;lt;- t(replicate(1000, { x1 &amp;hellip;">
+      
+    
+
+    
+    
+    <meta name="twitter:image" content="https://db.yihui.name/imgur/qbDNNBn.png">
+    
+    
+    
+    
+
+    
+
+    
+    
+
+
+<link href='//cdn.bootcss.com/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+    <link rel='stylesheet' href='https://d33wubrfki0l68.cloudfront.net/bundles/175e6b890d45127f0a41cca38797aa2b47bffb50.css'/>
+    
+    
+<script async src='https://d33wubrfki0l68.cloudfront.net/js/fc337d56a4a439ad008258a26ae805d68f352def/js/load-typekit.js'></script>
+
+<script>
+(function(u, c) {
+  var d = document, t = 'script', o = d.createElement(t), s = d.getElementsByTagName(t)[0];
+  o.src = u;
+  if (c) { o.addEventListener('load', function (e) { c(e); }); }
+  s.parentNode.insertBefore(o, s);
+})('//cdn.bootcss.com/pangu/3.3.0/pangu.min.js', function() {
+  pangu.spacingPage();
+});
+</script>
+
+
+<link rel='stylesheet' href='https://d33wubrfki0l68.cloudfront.net/css/ffa31e9e1d47e75fd5d8c32ff6db8890d1131439/css/custom.css'/>
+
+  </head>
+
+  
+  <body class="cn">
+    <header class="masthead">
+      
+
+<h1><a href="/"><img src="https://d33wubrfki0l68.cloudfront.net/42023922872cca83b20851f15088d1fd4236d084/e41a8/images/logo.png" alt="Yihui Xie" /></a></h1>
+
+
+
+      <nav class="menu">
+  <ul>
+  
+  
+  <li><a href="/">首页</a></li>
+  
+  <li><a href="/cn/about/">关于</a></li>
+  
+  <li><a href="/cn/">博客</a></li>
+  
+  <li><a href="/cn/vitae/">简历</a></li>
+  
+  <li><a href="/cn/recipe/">菜谱</a></li>
+  
+  <li><a href="/en/">English</a></li>
+  
+  
+
+<li class="menu-extra"></li>
+
+
+
+<li><a href="https://github.com/rbind/yihui/edit/master/content/cn/2010-01-05-unequal-variance-in-t-test.md" target="_blank">编辑</a></li>
+
+
+<li><a href="/cn/index.xml" type="application/rss+xml" title="RSS feed">订阅</a></li>
+
+<li><a href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="Attribution-NonCommercial-ShareAlike 4.0 International">版权</a></li>
+
+
+  </ul>
+</nav>
+
+    </header>
+
+    <article class="main">
+      <header class="title">
+      
+<h1>t检验方差不齐有多重要</h1>
+
+
+<h3>谢益辉 / 
+2010-01-05</h3>
+
+<hr>
+
+
+      </header>
+
+
+
+<p>传统统计教科书大多会提及t检验中方差齐性这个问题，因为检验的假设条件是需要总体方差相等的。然而这个问题实际上可能并没有人们想象的那么重要，这里给两个简单的数值计算结果，看看方差不等对检验结果有什么影响。</p>
+
+<pre><code class="language-r">par(mar = c(4, 4, 0.5, 0.5), mfrow = c(1, 2))
+set.seed(123)
+plot(pval &lt;- t(replicate(1000, {
+    x1 = rnorm(100, mean = 0, sd = runif(1, 0.5, 1))
+    x2 = rnorm(100, mean = 1, sd = runif(1, 2, 5))
+    c(t.test(x1, x2, var.equal = TRUE)$p.value, t.test(x1, x2,
+        var.equal = FALSE)$p.value)
+})), xlab = &quot;P-value: equal variance&quot;, ylab = &quot;P-value: unequal variance&quot;,
+    pch = 20, asp = 1)
+abline(0, 1)
+plot(pval[, 1], pval[, 2] - pval[, 1], xlab = &quot;P-value: equal variance&quot;,
+    ylab = &quot;Diff of p-values (unequal var - equal var)&quot;, pch = 20)
+</code></pre>
+
+<p>过程是：从两个正态总体中生成样本，第一个总体均值为0，标准差随机取自<code>U(0.5, 1)</code>，第二个总体均值为1，标准差取自<code>U(2, 5)</code>，显然两个总体标准差不相等，那么在t检验时设定和不设定方差相等的选项对结果有多大影响？把两种情况的P值都画出来：左图是原始P值，可见基本在对角线上，说明大致相等，若眼神儿不好，可看右图，即P值的差异，可见方差不等时P值偏大（原因很简单，因为Welch校正的自由度小于等于不校正的自由度，样本量相等的时候统计量的分母即标准误一样，因此统计量完全一样，自由度越小，P值越大嘛），但大多少呢？其实也没大多少。</p>
+
+<p><img src="https://db.yihui.name/imgur/qbDNNBn.png" alt="方差齐与不齐时t检验的结果对照" /></p>
+
+<p>Welch/Satterthwaite当然不是吃饱了没事干，要校正自由度当然也是有用武之地的，尤其是当样本量严重不相等时，这两者的结果就差远了。把第一个样本量改成10，然后如法炮制：</p>
+
+<pre><code class="language-r">par(mar = c(4, 4, 0.5, 0.5), mfrow = c(1, 2))
+set.seed(123)
+plot(pval &lt;- t(replicate(1000, {
+    x1 = rnorm(10, mean = 0, sd = runif(1, 0.5, 1))
+    x2 = rnorm(100, mean = 1, sd = runif(1, 2, 5))
+    c(t.test(x1, x2, var.equal = TRUE)$p.value, t.test(x1, x2,
+        var.equal = FALSE)$p.value)
+})), xlab = &quot;P-value: equal variance&quot;, ylab = &quot;P-value: unequal variance&quot;,
+    pch = 20, asp = 1)
+abline(0, 1)
+abline(h = 0.05, v = 0.05, col = &quot;gray&quot;)
+plot(pval[, 1], pval[, 2] - pval[, 1], xlab = &quot;P-value: equal variance&quot;,
+    ylab = &quot;Diff of p-values (unequal var - equal var)&quot;, pch = 20)
+</code></pre>
+
+<p><img src="https://db.yihui.name/imgur/1daOT3m.png" alt="方差齐与不齐时t检验的结果对照（样本量不同）" /></p>
+
+<p>这文章，上COS主站寒酸了点，有人能扩展一下就好了。不过这个过程倒是可以提醒广大人民群众避免“路见不平一声吼，吼完继续往前走”，尤其是懒得翻公式的人（像我这样），遇见问题，可以偷懒用计算的方法找答案。</p>
+
+<p>附“大家来找茬”一则：第二次的代码和第一次有啥不一样（除了样本量变了之外）？为啥有这么个变化？这小子想干啥？</p>
+
+
+  <footer>
+  
+<nav class="post-nav">
+  <span class="nav-prev">&larr; <a href="/cn/2009/12/cos-in-2010/">统计之都新年构想（杂碎篇）</a></span>
+  <span class="nav-next"><a href="/cn/2010/01/how-many-statistics-are-reproducible/">有多少统计可以重来</a> &rarr;</span>
+</nav>
+<script type="text/javascript">
+document.addEventListener('keyup', function(e) {
+  if (e.target.nodeName.toUpperCase() != 'BODY') return;
+  var url = false;
+  if (e.which == 37) {  
+    
+    url = '\/cn\/2009\/12\/cos-in-2010\/';
+    
+  } else if (e.which == 39) {  
+    
+    url = '\/cn\/2010\/01\/how-many-statistics-are-reproducible\/';
+    
+  }
+  if (url) window.location = url;
+});
+</script>
+
+
+
+<section class="comments">
+  <div id="disqus_thread"></div>
+  <script>
+  var disqus_config = function () {
+  
+    this.page.url = "http:\/\/yihui.name" + location.pathname;
+  
+  };
+  (function() {
+    var inIFrame = function() {
+      var iframe = true;
+      try { iframe = window.self !== window.top; } catch (e) {}
+      return iframe;
+    };
+    if (inIFrame()) return;
+    var disqus_js = '//yihui.disqus.com/embed.js';
+    var d = document, s = d.createElement('script');
+    s.src = disqus_js; s.async = true;
+    s.setAttribute('data-timestamp', +new Date());
+    var b = false, l = function() {
+      if (b) return;
+      (d.head || d.body).appendChild(s); b = true;
+    }
+    
+    if (location.hash.match(/^#comment/)) return(l());
+    var t = d.getElementById('disqus_thread');
+    var c = function() {
+      if (b) return;
+      var rect = t.getBoundingClientRect();
+      if (rect.top < window.innerHeight && rect.bottom >= 0) l();
+    };
+    window.addEventListener('load', c);
+    d.addEventListener('scroll', c);
+  })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+
+
+<script async src='https://d33wubrfki0l68.cloudfront.net/bundles/0c869cda57dbf381b70ed47277047b39f091d8e5.js'></script>
+
+
+
+<script async src="//cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+
+  
+
+
+
+<script src="//cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdn.bootcss.com/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdn.bootcss.com/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script src="//cdn.bootcss.com/highlight.js/9.12.0/languages/tex.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+  
+  <hr>
+  <div class="copyright">&copy; <a href="/">Yihui Xie</a> 2005 - 2018</div>
+  
+  </footer>
+  </article>
+  
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-1988641-2', 'auto');
+ga('send', 'pageview');
+</script>
+
+  </body>
+</html>
+

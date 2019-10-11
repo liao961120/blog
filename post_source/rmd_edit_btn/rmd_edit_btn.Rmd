@@ -1,0 +1,176 @@
+---
+link-citations: yes
+output:
+  #html_document:
+  #  self_contained: false
+  bookdown::html_document2:
+    number_sections: false
+    self_contained: false
+    pandoc_args: "--mathjax"
+    mathjax: NULL
+    theme: NULL
+    template: /home/liao/R/x86_64-pc-linux-gnu-library/3.4/rmarkdown/rmd/fragment/default.html
+---
+<!--For external images, set self_contained: false-->
+
+<!--yaml
+---
+mermaid: false
+mathjax: false
+mathjax_autoNumber: false
+highlight: true
+title: 'Inserting “Edit on GitHub” Buttons in a Single R Markdown Document'
+description: ""
+tags: ['R', 'R Markdown', 'R-bloggers']
+---
+yaml-->
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	fig.dim = c(7, 4),
+	message = FALSE,
+	warning = FALSE,
+	comment = "",
+	#fig.path = "../../assets/",
+	out.width = "100%"
+)
+library(knitr)
+```
+
+As the R Markdown ecosystem  becomes larger, users now may encounter situations where they have to make decisions on which output format of R Markdown to use. 
+One may found **none of the formats suitable** -- the features essential to the output document one wants may scatter across different output formats of R Markdown.
+
+Here is a real example I encountered. I wanted to create a document that:
+
+(@feat) supports [bookdown syntax](https://bookdown.org/yihui/bookdown/markdown-extensions-by-bookdown.html), e.g. text references
+(@feat) has an "Edit on GitHub" button for every chapter that links to the edit page of the source `.Rmd` on GitHub
+
+The two features above can be obtained easily with bookdown's default GitBook output format, but one more feature is essential to the document I want:
+
+(@feat) A document that supports [tabbed sections](https://bookdown.org/yihui/rmarkdown/html-document.html#tabbed-sections)[^why]
+
+So basically, I wanted `bookdown::gitbook` that supports tabbed sections, shown in Fig. \@ref(fig:gitbook). However, it's not possible. This is a feature unique to `rmarkdown::html_document`, [not `bookdown::gitbook`](https://github.com/rstudio/bookdown/issues/393).
+
+```{r gitbook, fig.cap='`bookdown::gitbook` supports tabbed sections? This is just a fake figure.', echo=FALSE}
+include_graphics('/post_source/rmd_edit_btn/book_tabset.png')
+```
+
+Now I have to find a way, not provided by the default output formats of R Markdown, to create a document with the above three features.
+My first thought was to find out how to add the tabbed sections feature to `bookdown::gitbook` via JavaScript, but since I'm not familiar with JS, I gave up JavaScript and decided to use the "**native**" R Markdown approach.
+I turned to `bookdown::html_document2`, which is based on `rmarkdown::html_document` (supports tabbed sections). 
+
+The [source repo of my document](https://github.com/liao961120/parallelCode) is a bookdown project, which has **several `.Rmd` files**.
+Each `.Rmd` file starts with a level-one heading and defines a single chapter. Since I wanted tabbed sections from `rmarkdown::html_document`, I have to use `bookdown::html_document2` as the output format, which creates a single HTML output file.
+
+
+## Adding <img src='https://bit.ly/2RRirG7' alt='fa-edit' style='display:inline-block;height: 1em;margin-bottom:0'> to Level-one Headings
+
+Setting `bookdown::html_document2` as the output format creates a single document output (as opposed to `bookdown::gitbook` which creates several HTML files by default),
+so if I want to add an "Edit on GitHub" button for every chapter, I have to track the **original `.Rmd` that generates the particular chapter**.
+
+### "Merge and Knit" vs. "Knit and Merge"
+
+There are [two rendering approaches](https://bookdown.org/yihui/bookdown/new-session.html) in bookdown. The default is **Merge and Knit**, which combines all source `.Rmd` files into one single `.Rmd` file **then** knits the document.
+In this case, it would be impossible to track the source `.Rmd` file for each chapter (unless I create a lookup table manually).
+
+I can track the source `.Rmd` files easily, however, if the document is rendered using the **Knit and Merge** approach. When using the **Knit and Merge** approach, the code chunks in the source `.Rmd` files are run and the results embedded **before** the documents get combined together in a single output file. This mean that I can retrieve the source `.Rmd` file name while knitting the file (by `knitr::current_input()`). This gives me all I need to create the link to the edit page of the `.Rmd` source file on GitHub.
+
+
+### Setting up: `_bookdown.yml` {#bookdownyml}
+
+To switch from the default "**Merge and Knit**" to "**Knit and Merge**", set `new_session: yes` in `_bookdown.yml`:
+
+```yaml
+new_session: yes
+before_chapter_script: 'addons/pre_chap.R'
+```
+
+
+### Setting up: `addons/pre_chap.R`
+
+To insert the link to the edit page on GitHub, put <code>&#96;r edit_btn&#96;</code> (inline R code) at the end of the h1 heading of each `.Rmd` file, for [example](https://github.com/liao961120/parallelCode/blob/4ea55dba03feef91ecf12e1014000fedabcc184b/00-functional_programming.Rmd#L1):
+
+```markdown
+# Function Factories ``r paste0('r edit_btn')``
+```
+
+`edit_btn` is a string variable holding the link[^img_edit] to GitHub. It is computed in the R script `addons/pre_chap.R`, which is run every time before knitting a `.Rmd` file:
+
+```r
+url <- 'https://github.com/liao961120/parallelCode/edit/master/'
+gh_edit_path <- paste0(url, knitr::current_input())
+
+edit_btn <- paste0('<a href="', gh_edit_path, '">',
+                   '<img src="https://bit.ly/2RRirG7" ',
+                   'alt="fa-edit" ',
+                   'class="edit"></a>')
+```
+
+To make `addons/pre_chap.R` run every time before knitting a `.Rmd` file, include it in the `before_chapter_script` field in `_bookdown.yml`, as shown in the section, [Setting up: `_bookdown.yml`](#bookdownyml), above.
+
+
+
+### Setting up: `_output.yml`
+
+This is the output format I set in `_output.yml`:
+
+```yaml
+bookdown::html_document2:
+  theme: readable
+  highlight: default
+  toc: true
+  toc_depth: 2
+  toc_float:
+    collapsed: false
+  css: addons/style.css
+  self_contained: false
+```
+
+
+## Path Problems Caused by `self_contained: false`
+
+You may notice that I set `self_contained: false` in `_output.yml`. This isn't necessary^[I set `self_contained` to `false` because I didn't want a large output file that takes too much time to load in the browser.] and it actually makes things a little more complicated, since, when using `bookdown::html_document2` as the output format, bookdown generates all its dependencies (CSS, JS libraries, figures, etc) in `_bookdown_files` and generates its ouput HTML file in the project root directory but doesn't move the dependencies and the output HTML to the output directory (defaults to `_book`) nor modify the relative path to dependency files in the output HTML. This causes the links in the output HTML to break.
+
+To fix this, I wrote a [bash script](https://github.com/liao961120/parallelCode/blob/master/build.sh) to move the output files[^filenames] to the correct places:
+
+```bash
+mv out.html _bookdown_files/index.html
+[[ -e out.rds ]] && mv out.rds _bookdown_files/
+cp -r addons/ _bookdown_files/
+
+[[ -d docs ]] && rm -r docs
+mv _bookdown_files docs
+```
+
+For users who don't use bash, R can be used instead. Check out [this post about file manipulation in R](http://theautomatic.net/2018/07/11/manipulate-files-r/).
+
+
+
+
+[^why]: The reason I wanted this feature is that I'm writing a document that works like a [parallel text](https://en.wikipedia.org/wiki/Parallel_text). 
+
+    I know three programming languages -- R, Bash, and Python, but I'm only familiar with R, struggle with the weird syntax of Bash sometimes (that said, I like Bash pretty much, for its power to do quick and dirty works), and don't use Python often enough to memorize commonly used syntax.
+    
+    By creating a [parallel text for R, Bash, and Python](https://liao961120.github.io/parallelCode), I can write down the code to deal with some common tasks in these three langauges, so I don't have to look it up on google every time I forgot the syntax of the langauge.
+
+    I planned to write this document myself initially. But why not do a little more work to make it convenient for others to contribute to this document? This is why I decided to add an "Edit on GitHub" button at the start of every chapter of the document.
+
+[^filenames]: Note that I changed some default filenames by adding some lines in `_bookdown.yml`:
+
+    ```yaml
+    book_filename: "out"  # output HTML filename
+    output_dir: "docs"    # output dir, defaults to `_book`
+    ```
+    
+
+
+[^img_edit]: `edit_btn` holds a `<a>` tag with `<img>` tag in it. The style of `img.edit` is defined in [`addons/style.css`](https://github.com/liao961120/parallelCode/blob/907a6c760e7b447bdd12074db785d89455e4009d/addons/style.css#L59-L69). I didn't use [fontawesome](https://fontawesome.com) for the edit icon <img src='https://bit.ly/2RRirG7' alt='fa-edit' style='display:inline-block;height: 1em;margin-bottom:0'>, since `bookdown::html_document2` doesn't support it and I don't want to introduce another dependency. I use `<img>` tag to source the edit icon from [wikimedia](https://commons.wikimedia.org/wiki/File:Edit_font_awesome.svg) instead.
+
+
+
+
+
+
+

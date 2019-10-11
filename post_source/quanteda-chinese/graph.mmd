@@ -1,0 +1,30 @@
+graph LR
+
+html("HTML")
+html -.->|"rvest"| df0
+
+subgraph 前處理
+df1("斷詞 data_frame")
+df0("data_frame")
+
+
+df0 -.->|"<br>     jiebaR <br>   (保留標點)<br>"| df1
+
+df1 -.->|"ropencc <br> 簡轉繁"| df1
+end
+
+corp("Corpus")
+token("Tokens")
+
+subgraph quanteda
+df1 -.->|"quanteda <br> corpus()"| corp
+corp -.->|"quanteda <br> tokenize()"| token
+end
+
+html -.- bls(" ")
+
+style bls fill:none,stroke:none
+style html fill:#ccbdb9
+style df1 fill:#92ff7f
+
+linkStyle 5 stroke-width:0px,fill:none;

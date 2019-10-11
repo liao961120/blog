@@ -1,0 +1,379 @@
+#' ---
+#' output: 
+#'  bookdown::html_document2:
+#'    number_sections: false
+#'    self_contained: false
+#'    pandoc_args: "--mathjax"
+#'    mathjax: NULL
+#'    theme: NULL
+#'    template: /home/liao/R/x86_64-pc-linux-gnu-library/3.4/rmarkdown/rmd/fragment/default.html
+#'    df_print: kable
+#' ---
+#' 
+#' <!--For external images, set self_contained: false-->
+#' <!--yaml
+#' ---
+#' mermaid: false
+#' mathjax: false
+#' mathjax_autoNumber: false
+#' highlight: true
+#' title: 'Visualizing Language Loss in Taiwan: Create an “Age-Sex Pyramid of Language” with ggplot2'
+#' tags: ['Linguistics', 'visualization', 'Web Page', 'Travi-CI', 'R', 'R-bloggers']
+#' ---
+#' yaml-->
+#' 
+#+ setup, include=FALSE
+knitr::opts_chunk$set(
+	message = FALSE,
+	warning = FALSE,
+	comment = "",
+	fig.path = "../../assets/visualize-language-loss/"
+)
+
+#' [Taiwan Language Survey](https://twlangsurvey.github.io) is a small project I worked on during May to June in 2018. The idea was to create a survey that **continuously** collects data and a web page that visualizes the collected data. The web page is updated weekly using [Travis-CI](https://travis-ci.org/twLangSurvey/twLangSurvey.github.io).
+#' 
+#' The main purpose of this survey is to raise public awareness of **language loss** in Taiwan. Hence, the survey is designed to collect data that can provide valuable information about language loss, for example, some questions were asked to gain insight about the change of linguistic competence acoss generations in a family (i.e. across the subject's parents, the subject, and the subject's children). In addition to changes within family, information about the age of the subjects is also colleceted, meaning that we can see how linguistic competence changes among diffrent age groups of subjects in a community, i.e. is a language becoming more dominant or entering the dying process?
+#' 
+#' Visualization is a powerful tool to capture how linguistic competences of different langauges are changing. But creating visualizations necessitates creativity -- how can language loss be visualized? Below, I illustrate one of the methods I created for visualizing language loss -- a visaulization inspired by the [age-sex pyramid](https://en.wikipedia.org/wiki/Population_pyramid).
+#' 
+#' 
+#' ## Age-Sex Pyramid of Language {#age-sex-pyramid-of-language}
+#' 
+#' The age-sex pyramid is used to visualize the population structure of a community. The vertical axis indicates the age and each horizontal bar represents an age group. The horizontal axis indicates the population size of male or female of a particular age group.
+#' 
+#' The age-sex pyramid is a great tool to visualize the population structure since the 'shape' of the pyramid gives readers a lot information. For example, an 'expansive pyramid' has longer bars at the bottom of the pyramid, which indicates the population is young and growing. A 'stationary pyramid' looks like a rectangular bar, indicating the population sizes of different age groups are about the same. A 'constructive' pyramid indicates a shrinking population, which is narrowed at the bottom.
+#' 
+#' Similarly, a **modified** version of the age-sex pyramid, which I'll call the '**age-sex pyramid of language**', can be used to visualize the population structure of a language and predicts the language's **vitality**. Instead of visualizing population size, the age-sex pyramid of language visualizes the **average fluency of a language** on the horizontal axis.
+#+ tw-pyramid, out.width='70%', echo=F, fig.cap='An age-sex pyramid of Taiwanese. The red bars on the left indicates females of different age groups and the blue bars on the right indicates males. The average fluency (values on the horizontal axis) is calculated from a six-point scale (0-5) on Taiwanese fluency.'
+knitr::include_graphics('https://twlangsurvey.github.io/out_graph/Tw_pyramid.png')
+#' 
+#' As shown in Figure \@ref(fig:tw-pyramid), the shape of the age-sex pyramid of [Taiwanese](https://en.wikipedia.org/wiki/Taiwanese_Hokkien) in Taiwan[^sample] is an '**inverted triangle**', which is almost never seen in the conventional population pyramid. However, this inverted triangular shape is expected to appear quite often, since it indicates an ongoing language loss in a community.
+#' 
+#' [^sample]: The samples are not representative though, and it might only reflect the situation in Taipei (see the geographical distribution of the samples below). But I think there are still reasons to believe that other locations in Taiwan have similar phenomena.
+#'     
+#'     ![geo-distribution of samples](https://twlangsurvey.github.io/out_graph/sample_spatial_distr.gif){style='width: 43%;display:block; margin-left:auto;margin-right:auto'}
+#' 
+#' | **Vitality of Language** | **Shape of Pyramid** |
+#' |--|--|
+#' | Shrinking and Dying | Inverted Triangle |
+#' | Growing | Triangle |
+#' | Stable | Rectangular Bar |
+#' 
+#' 
+#' ## Drawing Age-Sex Pyramid with ggplot2
+#' 
+#' As complex as it might seem, an age-sex pyramid created with ggplot2 is actually a (modified) bar chart. I learned this on [stackoverflow](https://stackoverflow.com/a/36804394), and the trick is
+#' 
+#' 1. Use `ifelse` to flip the value (here, population size) according to the gender of the age group
+#' 1. Use `geom_bar(stat = "identity")` to let the heights of the bars represent values in the data frame, i.e. the value given to `y`
+#' 1. Use `coord_flip()` to make the bars horizontal
+#' 
+#+ out.width='70%', fig.width=7, fig.height=3
+set.seed(1)
+df0 <- tibble::tibble(
+  Age = rep(c('10-19', '20-29', '30-39'), 2),
+  Gender = rep(c('Female', 'Male'), each = 3),
+  PopSize = sample(0:100, size = 6, replace = T)
+  )
+df0
+
+library(ggplot2)
+pl <- ggplot(df0, aes(x = Age, 
+                      y = ifelse(Gender == 'Male', PopSize, -PopSize),
+                      fill = Gender)) +
+  geom_bar(stat = 'identity') +
+  coord_flip()
+pl
+
+#' To center the plot (i.e. to make the point where population size is zero at the center of the plot), we have to scale the axis of 'population size' (`y`) with `scale_y_continuous`:
+#+ out.width='70%', fig.width=7, fig.height=3
+pl + scale_y_continuous(limits = c(-100, 100),
+                        breaks = seq(-100, 100, 25),
+                        labels = abs) +
+  labs(y = 'Population Size')
+#' where `abs` in `labels` is the function `abs()`. By default, `ggplot2` pass the value given in `breaks` to the the function specified in `labels`.
+#' 
+#' ## Visualizing Language Loss
+#' 
+#' To create an age-sex pyramid of language, the data structure needed is exactly the same as the one above, except the variable, `PopSize`, is replaced by 'average fluency' of a language. But since most people in Taiwan can speak more than one language (e.g. Mandarin-Taiwanese, Mandarin-Taiwanese-Hakka, Mandarin-English, etc.), the real data from the survey is a bit more complex Basically, the data structure needed to draw an age-sex pyramid of language looks like:
+#' 
+#' | **Gender** | **Ethnicity** | **Age Group** | **Avg. Fluency** |
+#' | -- |  -- |  -- |  -- |
+#' | female | Mandarin | 20-24 | 4.53 |
+#' | male | Taiwanese | 20-24 | 2.78 |
+#' | ... | ... | ... | ... |
+#' | female | Hakka | 25-29 | 2.23 |
+#' | male | Taiwanese | 35-39 | 3.57 |
+#' 
+#' ### Preparation of Data
+#' 
+#' The raw data of [Taiwan Language Survey](https://twlangsurvey.github.io/) can be retrieved [here](https://docs.google.com/spreadsheets/d/1NOJ9O_zBR6s-9e1fFGVcRaBjn5qQuVB9ZeSebhBctoM/edit?usp=sharing). The survey and raw data is in traditional Chinese. I'll skip the step of cleaning raw data (e.g., turn variable names to English) and used the cleaned data `survey.rds` instead.
+#+ 
+temp <- tempfile()
+download.file('https://raw.githubusercontent.com/twLangSurvey/twLangSurvey.github.io/master/data/survey.rds', destfile = temp)
+data <- readr::read_rds(temp)
+head(data, 3)
+#' The survey data, `data`, contains 22 variables and `r nrow(data)` observations (subjects). I only need these variables below to create the plot I want:
+#' 
+#' - `gender`: The gender of the subject
+#' - `age`: The age of the subject
+#' - `m_guard_identity`: Male guardian of the subject, should be 'father' in most cases
+#' - `f_guard_identity`: Female guardian of the subject, should be 'mother' in most cases
+#' - `<lang>_speak`: The subject's fluency of a language. `<lang>` is one of 'Mand' (Mandarin), 'Tw' (Taiwanese), 'Hak' ([Hakka](https://en.wikipedia.org/wiki/Hakka_Chinese)), 'Ind' (languages of the indigenous peoples, aka [Formosan languages](https://en.wikipedia.org/wiki/Formosan_languages), belong to Austronesian languages), 'SEA' (languages from South Easth Asia), and 'Eng' (English)
+#' - `dad_<lang>_speak`: The subject's male guardian's fluency of a language. `<lang>` is same as above.
+#' - `mom_<lang>_speak`: The subject's female guardian's fluency of a language. `<lang>` is same as above.
+#+
+library(dplyr)
+lang <- c('Mand', 'Tw', 'Hak', 'Ind', 'SEA', 'Eng')
+cols <- c('gender', 'age', 'm_guard_identity', 'f_guard_identity',
+          paste0(lang, '_speak'), 
+          paste0('dad_', lang, '_speak'),
+          paste0('mom_', lang, '_speak')
+          )
+data <- data[, cols] %>%
+    filter(gender == '男' | gender == '女')
+#' Since some content of the survey data is in Chinese, the code below is used to translate it to English:
+#+ message=F
+ch2eng <- function(x) {
+  if (x == '男') return('Male')
+  if (x == '女') return('Female')
+  if (x == '母親') return('Mother')
+  if (x == '父親') return('Father')
+  if (x == '無') return('None')
+  if (x == '(外)祖父') return('Grandpa')
+  if (x == '(外)祖母') return('Grandma')
+  if (x %in% c('阿姨', '嬸嬸', '舅媽', '姑姑', '伯母')) return('Aunt')
+  if (x %in% c('叔叔', '伯伯', '舅舅', '姑丈', '姨丈')) return('Uncle')
+  message('No translation found for `', x, '`', '\n')
+  return(x)
+}
+
+ch2eng_vec <- function(vec) {
+  new_vec <- vector(typeof(vec), length(vec))
+  for (i in seq_along(vec)) {
+    new_vec[[i]] <- ch2eng(vec[[i]])
+  }
+  return(new_vec)
+}
+
+data <- data %>% 
+  mutate(gender = ch2eng_vec(gender),
+         m_guard_identity = ch2eng_vec(m_guard_identity),
+         f_guard_identity = ch2eng_vec(f_guard_identity))
+head(data)
+
+#' #### Defining Ethnicity
+#' 
+#' You might notice that there is no variable in the data which explicitly indicates the ethnicity of the subject. To serve the purpose of this survey -- visualizing the vitality of languages in a community, ethnicity is defined solely by the linguistics competence of a subject's guardians.
+#' To give a specific example, let `subject A` has a mother who **can speak**^[Defined by scoring 3 or above in a self-reported 6-point scale measuring the fluency of a language spoken by the subject's parents.] Mandarin and Taiwanese and a father who speaks Mandarin and Hakka, then `subject A` is categorized as a Mandarin, a Taiwanese, and a Hakka simultaneously.
+#' 
+#' The function `filter_ethnic()` is used to filter out subjects with specified 'ethnicity'. This function is useful for drawing age-sex pyramid for each of the six languages.
+#+
+filter_ethnic <- function(df, lang, lev = 3) {
+    sp_lang <- vector("character", 3)
+    sp_lang[1] <- paste0("dad_", lang, "_speak")
+    sp_lang[2] <- paste0("mom_", lang, "_speak")
+    sp_lang[3] <- paste0(lang, "_speak")
+    
+    df2 <- df %>% 
+      filter(m_guard_identity != 'None' | f_guard_identity != 'None') %>%
+      filter(.data[[sp_lang[1]]] >= lev | .data[[sp_lang[2]]] >= lev) %>%
+      select(age, gender, sp_lang) 
+    return(df2)
+}
+
+#' ### Assinging Age Group to Subjects
+#' 
+#' Remember that the data structure needed for plotting age-sex pyramids requires **age group to be the basic unit**. `data` now consisits of single subjects, and we need information to group subjects together according to their ages. `mutate_age_group()` creates a new variable `age_group` by the subject's age. 
+#+
+mutate_age_group <- function(df, range = 5){
+    df$age_group <- as.character(
+      cut(df$age, right = F, breaks = seq(10, 95, by = range))
+    )
+    return(df)
+}
+#' `cut()` takes a numeric vector as its first input, and codes the values of the vector into new values according to the interval they fall into. In `mutate_age_group()`, `cut()` codes the input vectors according to the intervals specified in the argument `breaks`.
+#' 
+#' Now we can use these functions to add more information to the data frame. The idea is to first create a separated data frame for each ethnicity[^eng] (by `filter_ethnic()`), then attact new variables to the data frame that indicate a subject's ethnicity (`ethn_group`) and age group (`age_group`).
+#' 
+#' [^eng]: For English, different from all other languages, the level used to determine ethnicity is `0`, i.e. there is no filtering occuring, and all subjects are used. This is because, in Taiwan (and many other non-English speaking communities as well), English is not related to ethnicity and is strongly related to formal education and job requirements.
+#+
+lang <- c('Mand', 'Tw', 'Hak', 'Ind', 'SEA', 'Eng')
+lev <- c(3, 3, 3, 3, 3, 0)
+ethn_list_df <- vector("list", length(lang))
+
+for (i in seq_along(lang)){
+  ethn_list_df[[i]] <- filter_ethnic(data, 
+                                     lang = lang[i], 
+                                     lev = lev[i]) %>%
+    mutate(ethn_group = lang[i]) %>%
+    mutate_age_group() %>%
+    select(age, gender, age_group, ethn_group,
+           paste0(lang[i], "_speak")) %>%
+    rename(lang_fluency = paste0(lang[i], "_speak"))
+}
+
+#' Then we can recombine these data frames back to a single one, and this new data frame now has information about a subject's ethinicity and age group he/she belongs to. (Note that the new data frame is **expended** since one subject can have several ethnicity, i.e. one subject can appear in different rows of the data frame with different ethnicity.)
+#+
+bind_rows(ethn_list_df) %>% head()
+
+#' ### Data for Plotting
+#' 
+#' Finally, we are ready to group the subjects together according to his/her `gender`, `ethnicity`, and `age_group`. After grouping, we can use `dplyr::summarise()` to calculate each group's fluency of the language, which will be used as the variable on the horizontal axis of the age-sex pyramid.
+pl_data <- bind_rows(ethn_list_df) %>%
+  group_by(gender, ethn_group, age_group) %>%
+  summarise(mean(lang_fluency)) %>%
+  rename(avg_fluency = `mean(lang_fluency)`)
+
+head(pl_data)
+#' ### Plotting Function
+#' 
+#' We are going to draw 6 age-sex pyramids, one for each languages. So instead of writing `ggplot()` six times, I wrote a plotting function:
+#+
+library(ggplot2)
+pl_pyramid <- function(data, title = NULL) {
+  ggplot(data,
+         aes(x = age_group,
+             y = ifelse(gender == 'Male', avg_fluency, -avg_fluency),
+             fill = gender)) +
+  geom_bar(stat = "identity", width = 0.7) +
+  scale_y_continuous(limits = c(-5, 5),
+                     breaks = seq(-5, 5, 1),
+                     labels = abs(seq(-5, 5, 1))) +
+  coord_flip() +
+  scale_fill_manual(values = c("#E41A1C", "#377EB8"),
+                    breaks = c("Female", "Male")) +
+  labs(x = "Age", y = "Fluency", fill = "", title = title)
+}
+
+#' Now we can start plotting. Let's try `Mand` (Mandarin) and `Hak` (Hakka) first. We can use `dplyr::filter()` to filter out people speaking these languages:
+#+ dev='svg', fig.height=4.5, fig.width=7, out.width=c('49%', '49%'), fig.show='hold'
+tweak <-  theme_bw() + 
+  theme(axis.text = element_text(size = 15),
+        legend.justification = "right",
+        legend.position = "bottom",
+        legend.box = "vertical")
+
+pl_data %>%
+  filter(ethn_group == 'Mand') %>% 
+  pl_pyramid(title = 'Mandarin') + tweak
+
+pl_data %>%
+  filter(ethn_group == 'Ind') %>% 
+  pl_pyramid(title = 'Formosan Languages') + tweak
+
+#' Wait! It seems quite strange. The age-sex pyramid of 'Formosan Languages' doesn't look like a pyramid at all!
+#' This is because there were very few subjects defined as 'indigenous people' in the survey. To make plots like this (with only one or two age groups) comparable to others (such as that in 'Mandarin'), we need one more function to **insert missing age groups** to the data frame so that ggplot can draw empty bars for us.
+#' 
+#' First, we need to find out **all age groups in the data**:
+age_groups <- unique(pl_data$age_group)
+age_groups
+
+#' Then we can write a function `fill_empty_age_group()`, which takes a data frame as its first argument and checks whether there are age groups missing in the data frame (using its second argument, `age_group_all`, as comparison). If the age group is missing, `fill_empty_age_group()` appends a new row, which has `age_group` set to the missing age group and `avg_fluency` set to `0` (create an empty bar), to the input data frame.
+fill_empty_age_group <- function(df, age_group_all) {
+  for (i in seq_along(age_group_all)) {
+    if (!(age_group_all[i] %in% df$age_group)) {
+      df <- rbind(df, list(gender = "Female",
+                           ethn_group = "doesnt_matter",
+                           age_group = age_group_all[i],
+                           avg_fluency = 0))
+    }
+  }
+  return(df)
+}
+
+
+#+ echo=F
+#http://www.cookbook-r.com/Graphs/Multiple_graphs_on_one_page_(ggplot2)/
+multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
+  library(grid)
+
+  # Make a list from the ... arguments and plotlist
+  plots <- c(list(...), plotlist)
+
+  numPlots = length(plots)
+
+  # If layout is NULL, then use 'cols' to determine layout
+  if (is.null(layout)) {
+    # Make the panel
+    # ncol: Number of columns of plots
+    # nrow: Number of rows needed, calculated from # of cols
+    layout <- matrix(seq(1, cols * ceiling(numPlots/cols)),
+                    ncol = cols, nrow = ceiling(numPlots/cols))
+  }
+
+ if (numPlots==1) {
+    print(plots[[1]])
+
+  } else {
+    # Set up the page
+    grid.newpage()
+    pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
+
+    # Make each plot, in the correct location
+    for (i in 1:numPlots) {
+      # Get the i,j matrix positions of the regions that contain this subplot
+      matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
+
+      print(plots[[i]], vp = viewport(layout.pos.row = matchidx$row,
+                                      layout.pos.col = matchidx$col))
+    }
+  }
+}
+
+#' Now we're ready to explore language loss in Taiwan.`multiplot()` is used to put multiple plots together. The source code of `multiplot()` is copied directly from Winston Chang's [Cookbook for R](http://www.cookbook-r.com/Graphs/Multiple_graphs_on_one_page_(ggplot2)).
+#+ dev='svg', fig.height=9, fig.width=8, out.width='100%'
+tweak2 <-  theme_bw() + 
+  theme(legend.justification = "right",
+        legend.position = "bottom",
+        legend.box = "vertical")
+
+py1 <- pl_data %>%
+  filter(ethn_group == 'Mand') %>% 
+  fill_empty_age_group(age_groups) %>%
+  pl_pyramid(title = 'Mandarin') + tweak2
+
+py2 <- pl_data %>%
+  filter(ethn_group == 'Tw') %>%
+  fill_empty_age_group(age_groups) %>%
+  pl_pyramid(title = 'Taiwanese') + tweak2
+
+py3 <- pl_data %>%
+  filter(ethn_group == 'Hak') %>%
+  fill_empty_age_group(age_groups) %>%
+  pl_pyramid(title = 'Hakka') + tweak2
+
+py4 <- pl_data %>%
+  filter(ethn_group == 'Ind') %>%
+  fill_empty_age_group(age_groups) %>%
+  pl_pyramid(title = 'Formosan Languages') + tweak2
+
+py5 <- pl_data %>%
+  filter(ethn_group == 'SEA') %>%
+  fill_empty_age_group(age_groups) %>%
+  pl_pyramid(title = 'Languages of South East Asia') + tweak2
+
+py6 <- pl_data %>%
+  filter(ethn_group == 'Eng') %>%
+  fill_empty_age_group(age_groups) %>%
+  pl_pyramid(title = 'English') + tweak2
+
+multiplot(py1, py2, py3, py4, py5, py6, cols = 2)
+
+#' ## Language Loss in Taiwan
+#' 
+#' As described in [Age-Sex Pyramid of Language](#age-sex-pyramid-of-language) above, we can learn about a language's vitality in Taiwan from the age-sex pyramids drawn above. 
+#' 
+#' For Formosan and South East Asian languages, there are too few data, and we can't learn much about these languages from the plots. For Mandarin, the shape of the pyramid is rectangular, indicating the linguistic competence of Mandarin is stable across people of all ages. This is expected as Mandarin, in Taiwan, is the most prevalent language, and most people use it as the primary language in workplace and home. 
+#' 
+#' Pyramids of Taiwanese and Hakka have inverted trianglular shapes, indicating lower linguistic competence among yonger people. Indeed, it's not uncommmon to see the fathers and mothers talk to their children in Mandarin but talk to their parents in Taiwanese. Taiwanese is the second prevalent language in Taiwan, but it is shrinking, particularly among young people. Hakka ranks third in prevalence. It faces similar situation to Taiwanese but the situation is even worse, since the usage of Hakka is mostly restricted to Hakka people whereas usage of Taiwanese is not restricted to particular groups of people (many indigenous and Hakka peoples speak fluent Taiwanese).
+#' 
+#' English has a special status in Taiwan. It is not a native tongue to people born and raised in Taiwan, but many people know at least a little English. This is because formal education and the (awareness of) globalization lead parents to place importance on English education of their children. This also gives the age-sex pyramid of English its appearance -- a triangular shape with wider bottom than top. English is the only language that is growing in Taiwan and, arguably, the language with the strongest vitality. [Table 1](#tab:tw-pyramids) summarizes the discussion above.
+#' 
+#' | **Vitality of Language** | **Shape of Pyramid** | **Examples (Taiwan)**
+#' |--|--| -- |
+#' | Shrinking and Dying | Inverted Triangle | Taiwanese, Hakka|
+#' | Growing | Triangle | English |
+#' | Stable | Rectangular Bar | Mandarin |
+#' 
+#' Table: (\#tab:tw-pyramids) Situations of the four most prevalent languages in Taiwan.

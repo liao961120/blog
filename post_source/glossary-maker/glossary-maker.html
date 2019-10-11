@@ -1,0 +1,80 @@
+
+
+
+<!--For external images, set self_contained: false-->
+<!--yaml
+---
+mermaid: false
+mathjax2: false
+mathjax: false
+highlight: true
+title: "Create a Glossary in R Markdown"
+description: "Use Pandoc definition list to make glossary in R Markdown"
+tags: [R, R Markdown, R-bloggers]
+---
+yaml-->
+<p>I was thinking about creating a glossary in <a href="https://bookdown.org/yihui/bookdown/">bookdown</a> and found out that there was already an <a href="https://github.com/rstudio/bookdown/issues/199">issue</a> about it. I like Yihui’s <a href="https://github.com/rstudio/bookdown/issues/199#issuecomment-246888361">recommendation</a>: use Pandoc’s <a href="http://pandoc.org/MANUAL.html#definition-lists">definition lists</a>.<!--more--> This was exactly what I had been doing, but I quickly found out that there was a major drawback – the definition lists <strong>won’t order alphabetically unless written in that way</strong>.</p>
+<p>So I wrote an R function to reorder the definition lists written in R Markdown. Note that this functions <strong>only works for R Markdown files containing defintion lists exclusively</strong>. If the R Markdown files aren’t whole-definition-lists, the function will fail.</p>
+<div id="usage" class="section level2">
+<h2>Usage</h2>
+<p>To order the definition lists alphabetically, simply put the Rmd file path in the function. To have a different output file, provide the output file path as the second argument.</p>
+<pre class="r"><code>sort_def_list(&quot;glossary.Rmd&quot;)
+# sort_def_list(&quot;glossary.Rmd&quot;, &quot;reordered.Rmd&quot;)</code></pre>
+<p>The output in PDF looks like this (I used the <code>multicol</code> package)<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>:</p>
+<div class="figure">
+<img src="https://raw.githubusercontent.com/liao961120/liao961120.github.io/master/post_source/glossary-maker/glossary.png" />
+
+</div>
+</div>
+<div id="source-code" class="section level2">
+<h2>Source Code</h2>
+<pre class="r"><code>sort_def_list &lt;- function(in_file, out_file = NULL) {
+  library(stringr)
+  library(dplyr)
+  
+  data &lt;- readLines(in_file)
+  
+  # Extract, remove yaml header
+  yaml &lt;- which(data == &quot;---&quot;)
+  head &lt;- c(data[yaml[1]:yaml[2]], &quot;\n&quot;)
+  data &lt;- data[(yaml[2]+1):length(data)]
+  
+  # Indexing lines
+  def_start &lt;- which(stringr::str_detect(data,  &quot;^: &quot;)) - 1
+  def_end &lt;- c(def_start[2:length(def_start)] - 1, length(data))
+  
+  def_ranges &lt;- dplyr::data_frame(term = data[def_start],
+                                  start = def_start,
+                                  end = def_end) %&gt;%
+    dplyr::arrange(term) %&gt;%
+    dplyr::mutate(new_start = 
+                    cumsum(
+                      c(1, (end-start+1)[-length(term)])
+                      )
+                  ) %&gt;%
+    dplyr::mutate(new_end = new_start + (end-start))
+  
+  
+  # Create ordered definition list
+  data2 &lt;- rep(NA, length(data))
+  for (i in seq_along(def_ranges$term)) {
+    start &lt;- def_ranges$start[i]
+    end &lt;- def_ranges$end[i]
+    n_start &lt;- def_ranges$new_start[i]
+    n_end &lt;- def_ranges$new_end[i]
+    data2[n_start:n_end] &lt;- data[start:end]
+  }
+  
+  # Rewrite rmd
+  if (is.null(out_file)) out_file &lt;- in_file
+  data2 &lt;- c(head, data2[!is.na(data2)])
+  writeLines(paste(data2, collapse = &quot;\n&quot;),
+             out_file)
+}</code></pre>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>To see the source R Markdown file, visit <a href="https://github.com/liao961120/liao961120.github.io/blob/master/post_source/glossary-maker/glossary.rmd"><code>glossary.rmd</code></a>. To see the output PDF, visit <a href="https://github.com/liao961120/liao961120.github.io/blob/master/post_source/glossary-maker/glossary.pdf"><code>glossary.pdf</code></a><a href="#fnref1">↩</a></p></li>
+</ol>
+</div>

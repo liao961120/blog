@@ -1,0 +1,37 @@
+%加這個就可以設定字體
+\usepackage{fontspec}
+%使用xeCJK，其他的還有CJK或是xCJK
+\usepackage{xeCJK}
+\usepackage{bm}
+
+% Pandoc 只能設置 10, 11, 12 pt 超出此範圍需用此指令
+\usepackage[fontsize=13pt]{scrextend}
+
+%設定英文字型，不設的話就會使用預設的字型
+\setmainfont{Calibri}
+
+
+\newfontfamily\ipa{Doulos SIL}
+\DeclareTextFontCommand{\ipatext}{\ipa}
+%設定中英文的字型
+%字型的設定可以使用系統內的字型，而不用像以前一樣另外安裝
+% AR PL KaitiM Big5 標楷體
+% .PingFang TC
+% Noto Sans CJK TC
+% HanWangHeiLight
+% HanWangHeiHeavy
+\setCJKmainfont[
+	BoldFont={HanWangHeiHeavy}  % 粗體字使用華康粗明體
+    ]{HanWangHeiLight}    % 一般字型則使用華康細明體
+
+%中文自動換行
+\XeTeXlinebreaklocale "zh"
+
+%文字的彈性間距
+\XeTeXlinebreakskip = 0pt plus 1pt
+
+%設定段落之間的距離
+\setlength{\parskip}{0.15cm}
+
+%設定行距
+\linespread{1.2}\selectfont

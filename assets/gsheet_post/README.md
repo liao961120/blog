@@ -1,0 +1,1 @@
+Images in this folder is used in the post [google 表單即時回饋](https://liao961120.github.io/2018/04/20/gsheet_survey.html). **Do not modify file names or delete files**.

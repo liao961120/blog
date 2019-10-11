@@ -1,0 +1,27 @@
+    graph TD
+
+    C(Corpus)
+    token(Tokens)
+    AP["Positional analysis"]
+    AN["Non-positional analysis"]
+    dfm(DFM)
+    tidy("Tidy Text Format")
+    vis("Visualize")
+    
+    C --> token 
+    token --> dfm
+    token -.-> AP
+    dfm -.-> AN
+    tidy -->|"cast_dfm()"| dfm
+    dfm -->|"tidy()"| tidy
+    dfm -.- vis
+    tidy -.-> vis
+    AP -.- vis
+    
+    style C stroke-width:0px,fill:#6bbcff
+    style token stroke-width:0px,fill:#6bbcff
+    style dfm stroke-width:0px,fill:#6bbcff
+    style tidy stroke-width:0px,fill:orange
+    linkStyle 6 stroke-width:0px,fill:none;
+    linkStyle 8 stroke-width:0px,fill:none;
+  

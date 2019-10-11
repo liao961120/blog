@@ -1,0 +1,74 @@
+
+
+
+<!--yaml
+---
+mermaid: false
+mathjax2: false
+mathjax: false
+highlight: true
+title: "Making Jekyll Blog Suitable for R-bloggers"
+description: "A demo for fixing problems that may be encountered when one wants to add blog to R-bloggers."
+tags: [R-bloggers, Jekyll, R Markdown, Web Page]
+---
+yaml-->
+<p>According to the post <a href="https://www.r-bloggers.com/add-your-blog/page/5/">add your blog</a>, adding one’s blog to <a href="https://www.r-bloggers.com/">R-bloggers</a> isn’t easy at all, especially for people who use <a href="https://rmarkdown.rstudio.com">R Markdown</a> to write posts and use <a href="https://jekyllrb.com/">Jekyll</a> to generate static web page on GitHub. <!--more--></p>
+<p>Two reasons make it difficult:</p>
+<ol style="list-style-type: decimal">
+<li><blockquote>
+<p>The <strong>feed</strong> you submit <strong>should ONLY be about R</strong> (e.g: with R code, or directly related to the R world/community).</p>
+</blockquote>
+<ul>
+<li>This causes problem because most bloggers write posts spanning several topics, and some blogging platform doesn’t support RSS feed for a particular category of posts.</li>
+</ul></li>
+<li><blockquote>
+<p>Make sure the HTML of your feed’s content is well formatted – otherwise it would not be able to load on r-bloggers. This includes to NOT copy-pasting from RStudio’s notebook extension – the feed <strong>should NOT include “base64” images</strong>, make sure your images are saved as png or similar file formats.</p>
+</blockquote>
+<ul>
+<li>For posts written with <a href="https://rmarkdown.rstudio.com">R Markdown</a> and <a href="https://rmarkdown.rstudio.com/html_fragment_format.html">HTML Fragment</a> output format, the embedded images generated from code chunks (such as outputs from <code>plot()</code>) are <strong>base64 images</strong>.</li>
+</ul></li>
+</ol>
+<div id="fixing-the-first-problem" class="section level2">
+<h2>Fixing the First Problem</h2>
+<p>For <strong>Jekyll</strong> sites using <a href="https://github.com/jekyll/jekyll-feed">jekyll-feed</a> plugin to generate sitemaps, it is not possible to have RSS feed for a particular tag or category of posts. However there’s a workaround using <strong>Jekyll</strong>’s <a href="https://shopify.github.io/liquid/">Liquid syntax</a> to write an RSS template, as indicated by <a href="https://devblog.dymel.pl/2017/02/09/category-rss-feed-in-jekyll/">this post</a>. I modified the template to make it suitable for the criteria set by R-bloggers, you can take a look at the file <a href="https://github.com/liao961120/liao961120.github.io/blob/master/feed.rbloggers.xml">feed.rbloggers.xml</a>.</p>
+</div>
+<div id="fixing-the-second-problem" class="section level2">
+<h2>Fixing the Second Problem</h2>
+<p>To fix the second problem, set <code>self_contained: false</code> in the yaml header of the R Markdown document. With this setting, plots from code chunks are automatically generated in a figure directory, and the <code>.html</code> output uses <code>&lt;img&gt;</code> tags to source the plots in that figure directory.</p>
+<pre class="yaml"><code>---
+output:
+  html_fragment:
+    self_contained: false
+---</code></pre>
+<p>However, this creates a problem since the relative path in the <code>&lt;img&gt;</code> tags probably won’t work in the remote directory that hosts your site. To overcome this problem, you have to <strong>change the default figure directory</strong> and <strong>post-process the output <code>.html</code> file</strong>.</p>
+<p>For example, the source of this post(<code>rblogger-criteria.rmd</code>) is two layers under the root dir of the web site.</p>
+<pre><code>+---assets/
+|   +---rblogger-criteria-img/
++---_includes/
++---_plugins/
++---_posts/
++---post_source/
+|   +---rblogger-criteria/
+|   |   +---rblogger-criteria.rmd
+|   |   +---rblogger-criteria.html
++---index.html
++---_config.yml</code></pre>
+<p>I set my figure directory to <code>assets/rblogger-criteria-img/</code>:</p>
+<pre class="r"><code>```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+    fig.path = &quot;../../assets/rblogger-criteria-img/&quot;
+)
+```</code></pre>
+<p>so when the site is rendered, the image would be in <code>https://liao961120.github.io/assets/rblogger-criteria-img/</code></p>
+<p>The last thing to do is processing the output <code>rblogger-criteria.html</code> and replacing <code>&lt;img src=&quot;../../assets</code> with <code>&lt;img src=&quot;/assets</code> in the <code>&lt;img&gt;</code> tag. I do this with a simple bash script:</p>
+<pre class="bash"><code>sed &quot;s#&lt;img src=\&quot;../../assets#&lt;img src=\&quot;/assets#g&quot; rblogger-criteria.html &gt; temp
+cat temp &gt; rblogger-criteria.html</code></pre>
+</div>
+<div id="a-demo" class="section level2">
+<h2>A Demo</h2>
+<p>Below is a plot generated from an R Markdown code chunk, you can look at the path in <code>&lt;img&gt;</code> tag with the developer’s tool or the <a href="/assets/rblogger-criteria-img/iris-1.png">image source</a> to confirm the path of the image is just as mentioned above.</p>
+<pre class="r"><code>library(ggplot2)
+ggplot(iris, aes(Sepal.Length, Petal.Width)) +
+    geom_point(aes(color = Species))</code></pre>
+<p><img src="../../assets/rblogger-criteria-img/iris-1.png" width="100%" /></p>
+</div>

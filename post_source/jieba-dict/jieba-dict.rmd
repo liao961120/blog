@@ -1,0 +1,144 @@
+---
+link-citations: yes
+output:
+  html_fragment:
+    includes:
+    number_sections: no
+---
+
+<!--yaml
+---
+mermaid: false
+mathjax2: false
+mathjax: false
+highlight: true
+title: "jieba 自訂詞庫斷詞"
+description: "提供自訂詞庫製作方式以及 jiebaR 自訂詞庫斷詞示範"
+tags: [Text Mining, R, 中文]
+---
+yaml-->
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	fig.dim = c(7, 4),
+	message = FALSE,
+	warning = FALSE,
+	comment = "",
+	out.width = "100%"
+)
+```
+
+在進行中文 Text Mining 前處理時，必須先經過斷詞處理。社群當中存在相當好的斷詞處理工具，如 [jieba](https://github.com/fxsjy/jieba)。但斷詞時常遇到一個問題：**文本中重要的詞彙因為不常見於其它地方而被斷開，像是人物角色名稱**。要處理這個問題，需將自訂詞庫提供給斷詞套件，才不會將重要詞彙斷開。
+<!--more-->
+
+這邊將使用 [jiebaR](https://github.com/qinwf/jiebaR)，介紹使用自訂詞庫的斷詞方式，並提供自訂詞庫的製作方式。
+
+## 示範語料
+
+這裡使用金庸**[神雕俠侶](https://zh.wikipedia.org/wiki/%E7%A5%9E%E9%B5%B0%E4%BF%A0%E4%BE%B6)第三十二回 --- 情是何物**作為斷詞的文本。武俠小說在此是個很好的例子，因為裡面有許多人物名稱和專有名詞。
+
+因為著作權問題[^right]，語料的原始檔(`032.txt`)將不會出現在本文的 [GitHub repo](https://github.com/liao961120/liao961120.github.io/tree/master/post_source/jieba-dict) 中。
+
+[^right]: 本文目的僅在促進教育與學術，並無營利企圖。且本文僅顯示極少的小說內容，應屬合理使用。若有侵犯著作權的疑慮，麻煩透過 [Email](mailto:liaomovie2@gmail.com) 與我聯絡。
+
+
+## 製作自訂詞庫
+
+取得小說這類文本的角色名稱與特殊名詞乍看之下可能非常耗工耗時，但有些時候其實相當容易，尤其是著名的小說。這要歸功於[維基百科](https://en.wikipedia.org/wiki/Main_Page)，因為越是著名的小說，其越有可能有詳盡的維基百科頁面，而**維基百科對製作詞庫最重要的特色在於其頁面的超連結**，因為通常只有**專有名詞才會成為一個維基頁面上的超連結**。
+
+這邊使用維基百科的[神鵰俠侶角色列表](https://zh.wikipedia.org/wiki/%E7%A5%9E%E9%B5%B0%E4%BF%A0%E4%BE%B6%E8%A7%92%E8%89%B2%E5%88%97%E8%A1%A8)作為詞庫的來源。以下使用`rvest`套件清理此頁面：
+```{r}
+library(rvest)
+library(dplyr)
+library(magrittr)
+library(knitr)
+
+path <- "神鵰俠侶角色列表.html" 
+# 這裡已先行下載網頁，若無可直接使用網址
+
+data <- read_html(path) %>% 
+    html_nodes("ul") %>% html_nodes("li") %>%
+    html_nodes("a") %>% html_text()
+```
+
+觀察頁面後，可發現多數與小說相關的詞彙都位在 unordered list 下的連結內文(\<a> tag)，因此透過 3 個`html_nodes()`取得連結，並用`html_text()`擷取連結內文。
+
+接著看看擷取的詞彙，可以發現這些詞彙依照順序大致可區分成三個來源：
+
+1. 自維基頁面的**目錄**擷取之連結
+2. 內文的連結(這是我們要的)
+3. 其它連結
+    - 對應至頁面最下方，與小說有關但並非小說主要內容的連結，如，「射雕英雄传角色列表」。另外，也包含維基百科頁面的固定連結，如「編輯」、「討論」、「下載為PDF」等。
+
+```{r}
+data <- unique(data)
+
+data[1:3]
+data[21:25]
+data[207:211]
+```
+
+我們要的內容介在`data[21]`(`r data[21]`)至`data[206]`(`r data[206]`)之間。此外，亦可手動加入連結中沒有的詞彙：
+```{r}
+data <- as_data_frame(data[21:206]) %>% 
+    rbind("過兒", "靖哥哥") # 手動額外輸入
+
+head(data, 4) %>% kable("markdown", align="c")
+```
+
+最後，將`data`存成`.csv`檔，方便未來使用：
+```{r}
+readr::write_csv(data, "sdxl_wordlist.csv")
+```
+
+## jiebaR 斷詞
+
+準備好自訂詞庫後，要開始對文本進行斷詞。
+
+jiebaR 斷詞可以選擇外來檔案或將檔案讀入後在進行斷詞，這邊將文本檔案讀入再斷詞：
+```{r}
+library(stringr)
+raw_text <- readr::read_file("032.txt")
+
+raw_text %>% str_trunc(80)
+```
+
+### 無自訂詞庫
+
+首先，我們可以看看沒有自訂詞庫的斷詞效果：
+```{r}
+library(jiebaR)
+stop_words <- readr::read_table2("stop-zh-tw-withpunc",
+                                 col_names = F) %>%
+                     rbind("\n", "\r") %>%
+                     set_names("word")
+
+seg <- worker(bylines = F, symbol = T)
+
+segment(raw_text, seg) %>%
+    as_data_frame() %>% 
+    anti_join(stop_words, by=c("value"="word")) %>%
+    count(value) %>%
+    arrange(desc(n)) %>%
+    head() %>% kable("markdown", align="c")
+```
+可以看到有些斷詞是正確的，如「公孫止」。但某些似乎常常斷錯，例如，「黃蓉」、「楊過」(某些似乎斷錯，導致有許多單獨的「楊」)。
+
+
+### 使用自訂詞庫
+
+在`jiebaR::worker()`中設定自訂詞庫的位置：`user = "sdxl_wordlist.csv"`，即可在斷詞系統中新增字典：
+```{r}
+seg <- worker(bylines = F, symbol = T,
+              user = "sdxl_wordlist.csv")
+
+segment(raw_text, seg) %>%
+    as_data_frame() %>% 
+    anti_join(stop_words, by=c("value"="word")) %>%
+    count(value) %>%
+    arrange(desc(n)) %>%
+    head() %>% kable("markdown", align="c")
+```
+
+可以看到使用自訂詞庫後，斷詞變得有意義多了。

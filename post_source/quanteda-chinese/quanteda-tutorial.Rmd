@@ -1,0 +1,493 @@
+---
+link-citations: yes
+bibliography: ref.bib
+output:
+  html_fragment:
+    includes:
+    number_sections: no
+---
+
+<!--yaml
+---
+mermaid: true
+mathjax2: false
+mathjax: false
+highlight: true
+title: "Text Mining 前處理：中文、R 與 quanteda"
+description: "因為中文的特性，使得中文 Text Mining 的前處理較為複雜。此文以 R, quanteda, jiebaR 進行部落格文章的前處理，提供一套中文文本前處理的架構。"
+tags: [Text Mining, R, bash, 中文]
+---
+yaml-->
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	fig.dim = c(7, 4),
+	message = FALSE,
+	warning = FALSE,
+	comment = "",
+	out.width = "100%"
+)
+library(knitr)
+```
+
+
+中文 Text Mining 的前處理比起其它以拉丁字母為主的文本困難許多，參考資源也相對龐雜不全。
+這裡以較晚近出現的[`quanteda`](https://quanteda.io/)套件為根據，依其需求進行中文文本前處理<!--more-->。
+
+選擇`quanteda`而非其它較流行的套件如`tm`的原因是因為其[多語言支持](https://github.com/quanteda/stopwords)較佳，譬如其內建的 tokenizer 能[直接對中文進行斷詞](https://koheiw.net/?p=339)。然而，由於 [`jieba`](https://github.com/fxsjy/jieba)的社群資源以及斷詞效果較佳，此文還是以[`jiebaR`](https://github.com/qinwf/jiebaR)進行斷詞。
+
+此外，因為使用的語料是簡體字，這裡也提到簡體、繁體轉換處理的相關資源。
+我希望這篇文章能整理出一套中文文本前處理的架構，試圖減輕未來可能遇到的問題。
+
+
+## 流程
+
+```{r echo=FALSE}
+library(htmltools)
+HTML('
+<div class="mermaid">
+graph LR
+html("HTML")
+html -.->|"rvest"| df0
+subgraph 前處理
+df1("斷詞 data_frame")
+df0("data_frame")
+df0 -.->|"<br>     jiebaR <br>   (保留標點)<br>"| df1
+df1 -.->|"ropencc <br> 簡轉繁"| df1
+end
+corp("Corpus")
+token("Tokens")
+subgraph quanteda
+df1 -.->|"quanteda <br> corpus()"| corp
+corp -.->|"quanteda <br> tokenize()"| token
+end
+html -.- bls(" ")
+style bls fill:none,stroke:none
+style html fill:#ccbdb9
+style df1 fill:#92ff7f
+linkStyle 5 stroke-width:0px,fill:none;
+</div>
+')
+```
+
+
+## 資料爬取
+
+這邊使用 [RStudio](https://www.rstudio.com/) 軟體工程師 [Yihui](https://yihui.name/en/about/) 的[中文部落格](https://yihui.name/cn/)文章作為練習素材。首先需要取得文章的網址，因此先到部落格的文章列表頁面(https://yihui.name/cn/)，使用瀏覽器的[開發者工具](https://developers.google.com/web/tools/chrome-devtools/?hl=zh-tw)(按`Ctrl + Shift + I`開啟)進行**觀察**。
+
+接著使用[`rvest`](https://github.com/hadley/rvest)套件擷取網頁中所有文章的連結，並將文章網址儲存成`list_of_post.txt`：
+```{r}
+library(dplyr)
+library(rvest)
+
+list_of_posts <- read_html("https://yihui.name/cn/") %>% 
+    html_nodes(".archive") %>% # 列表在 div.archive 之下
+    html_nodes("p") %>% # 文章標題在 <div> 下之 <p>
+    html_nodes("a") %>% html_attr("href") # 文章連結在 <p> 下之 <a> 
+
+readr::write_lines(list_of_posts, "yihui/list_of_post.txt")
+```
+
+
+```{r}
+head(list_of_posts, 2)
+tail(list_of_posts, 2)
+length(list_of_posts)
+```
+
+可以看到總共有 `r length(list_of_posts)` 篇文章，時間從 2005 年到今年七月都有發文的紀錄。
+
+
+由於文章數量相當多，因此之後僅會下載部分文章，**避免造成伺服器負擔過大**。下載網頁時，可以在 R 中直接使用`rvest`(見下文**資料前處理**)，但我比較建議使用 Bash[^bash]的`wget`指令，才不會因為重複下載網頁造成伺服器負擔。
+
+[^bash]: Mac 和 Linux 內建有 Bash，但 Windows 沒有。
+
+在下載前，需先決定目標文章的網址`sub_list`：
+```{r}
+library(stringr)
+set.seed(2018) # 設隨機種子 固定隨機函數的結果
+
+idx <- str_detect(list_of_posts, "2018|2015|2010")
+sub_list <- list_of_posts[idx]
+sub_list <- sub_list[sample(seq_along(sub_list), 20)]  %>% # 抽出 20 篇
+    str_replace_all(pattern = "^/", # 將站內連結改為完整 url
+                    replacement = "https://yihui.name/") %>%
+    str_replace_all(pattern = "/$", "/index.html")
+
+readr::write_lines(sub_list, "yihui/sublist.txt")
+
+# 給 Bash 用的
+sub_list %>%
+    str_replace_all("https://yihui.name/cn/", "") %>%
+    str_replace_all("/index.html", "") %>%
+    str_replace_all("/", "-") %>% 
+    str_replace_all("-$", "") %>%
+    readr::write_lines("yihui/sublist_name.txt")
+```
+
+### Bash 指令下載網頁
+
+> 無法使用 bash 指令者，可跳過此節
+
+為了自動化下載網頁，我寫了一個簡單的 Bash script `wget_list`，用法如下:
+
+- `wget_list <網址文字檔> <檔名文字檔>`[^chmod]
+    - `<網址文字檔>`： 每一列(row)由一個網址組成
+    - `<檔名文字檔>`： 每一列由一個名稱組成，每個名稱與`<網址文字檔>`的網址對應
+
+<!--FOOTNOTE START-->
+[^chmod]: 要能直接執行`wget_list`需先給予其執行的權限，因此需設置`chmod 755 <path to wget_list>`，並且將`wget_list`置於 shell 會自動搜尋程式的地方(如`/usr/bin/`)。
+    
+    另一個方法是不設置權限，直接執行`wget_list`：  
+    `bash <path to wget_list> <file1> <file2>`
+<!--FOOTNOTE END-->
+
+在這裡，執行下列指令即可下載網頁
+```{bash eval=FALSE}
+cd yihui/html
+wget_list ../sublist.txt ../sublist_name.txt
+cd -
+```
+
+**`wget_list`**:
+```{bash eval=FALSE}
+#!/bin/bash
+
+#<<< wget_list: dowload webpages listed in a file >>>#
+### Argument 1 is the file of links, 1 url per row   ###
+### Argument 2 is the file of names, 1 name per row  ###
+
+file1=$1
+file2=$2
+
+## Get the number of lines in the link list
+num_lines=$(wc -l $file1 | egrep -o '^[0-9]*')
+
+## loop over the lines in file1, dowload the the file & name them as listed in file2
+for (( i=1; i<=${num_lines}; ++i )); do
+     wget "$(sed -n ${i}p $file1)" \
+         -O "$(sed -n ${i}p $file2)"
+done
+```
+
+
+## 資料前處理
+
+在清理資料之前，需先剖析網頁結構(就如同之前剖析文章列表頁面一樣)。
+這邊觀察[這篇文章](https://yihui.name/cn/2015/11/peer-review/)，大致可以找出這些資訊：
+```{r}
+path <- "https://yihui.name/cn/2015/11/peer-review/"
+all <- read_html(path) %>%
+    html_nodes("article")
+header <- all %>% html_nodes("header")
+
+title <- header %>%      # 文章標題
+    html_nodes("h1") %>% html_text()
+
+post_date <- header %>%  # 發文日期
+    html_node("h3") %>% html_text() %>%
+    str_extract("201[0-9]-[0-9]{2}-[0-9]{2}")
+
+article <- all %>%       # 內文
+    html_nodes("p") %>% 
+    html_text() %>% paste(collapse = "\n") 
+    # 這裡將 chr vector collapse 至 1 個字串，
+    # 簡化資料結構，並以分行符號保留段落資訊
+
+num_sec <- all %>%      # 內文段落數
+    html_nodes("p") %>% length
+
+links <- all %>% html_nodes("p") %>% # 內文連結  
+    html_nodes("a") %>% html_attr("href")
+link_text <- all %>% html_nodes("p") %>% # 內文連結標題
+    html_nodes("a") %>% html_text()
+```
+
+```{r}
+library(tibble)
+df <- data_frame(title = title,
+           date = post_date,
+           content = article,
+           num_sec = num_sec,
+           links = list(links),
+           link_text = list(link_text)
+           )
+df %>%
+    mutate(title = str_trunc(title, 8),
+           content = str_trunc(content, 8),
+           links = str_trunc(links, 8),
+           link_text = str_trunc(link_text, 8)) %>%
+    kable("markdown", align = "c")
+```
+
+我們可以將上面的程式碼改寫成函數`post_data()`，自動讀取文章並輸出 data frame：
+```{r fc-post_data}
+post_data <- function (path) {
+    all <- read_html(path) %>%
+        html_nodes("article")
+    header <- all %>% html_nodes("header")
+    
+    title <- header %>%      # 文章標題
+        html_nodes("h1") %>% html_text()
+    
+    post_date <- header %>%  # 發文日期
+        html_node("h3") %>% html_text() %>%
+        str_extract("201[0-9]-[0-9]{2}-[0-9]{2}")
+    
+    article <- all %>%       # 內文
+        html_nodes("p") %>% 
+        html_text() %>% paste(collapse = "\n")
+        # 這裡將 chr vector collapse 至 1 個字串，
+        # 簡化資料結構，並以分行符號保留段落資訊
+        
+    num_sec <- all %>%      # 內文段落數
+        html_nodes("p") %>% length
+    
+    links <- all %>% html_nodes("p") %>% # 內文連結  
+        html_nodes("a") %>% html_attr("href")
+    link_text <- all %>%     # 內文連結標題
+        html_nodes("p") %>% 
+        html_nodes("a") %>% html_text()
+    
+    df <- tibble::data_frame(title = title,
+                             date = post_date,
+                             content = article,
+                             num_sec = num_sec,
+                             links = list(links),
+                             link_text = list(link_text)
+                             )
+}
+```
+
+接著，將所有文章讀取至一個 data frame `all_post`：
+
+```{r}
+library(dplyr)
+library(tidyr)
+
+html_list <- list.files("yihui/html/") # 列出資料夾下的檔案
+all_post <- vector("list", length(html_list))
+
+for (i in seq_along(html_list)) {
+    path <- paste0("yihui/html/", html_list[i])
+    all_post[[i]] <- post_data(path)
+}
+
+all_post <- bind_rows(all_post) %>% arrange(desc(date))
+
+head(all_post) %>%
+    mutate(title = str_trunc(title, 8),
+           content = str_trunc(content, 8),
+           links = str_trunc(links, 8),
+           link_text = str_trunc(link_text, 8)) %>%
+    kable("markdown", align = "c")
+```
+
+### 直接從網路讀取
+
+如果無法使用 Bash 指令下載網頁，可將上面程式碼的`html_list`改為讀取`sublist.txt`中的 url，並修改`for`迴圈中的`path`：
+
+```{r eval=FALSE}
+html_list <- read_lines("yihui/sublist.txt") # 讀取 url 
+all_post <- vector("list", length(html_list))
+
+for (i in seq_along(html_list)) {
+    path <- html_list[i]
+    all_post[[i]] <- post_data(path)
+}
+
+all_post <- bind_rows(all_post) %>% arrange(desc(date))
+```
+
+
+### 斷詞
+
+在處理中文、日語等文本資料，需先經過斷詞處理，因為其不像英語等歐洲語言的文本，以空格表示字詞的界線。
+
+我們將使用`jiebaR`套件的`segment()`進行斷詞。由`?segment()`查看其 documentation 可知**`segment()`只吃文字檔或 一個句子**，因此需先搞清楚`all_post`的結構才能進行斷詞：
+
+`all_post`: 20*5 的`data_frame`，每列(row)為一篇文章
+    - $title: 每列為 1 個值
+    - $date: 每列為 1 個值
+    - $content: 每列為 1 個值，段落資訊藏在字串中的`\n`符號
+    - $links: 每列為 1 個 list
+    - $link_text: 每列為 1 個 list
+
+
+`all_post$content`的結構相當簡單(一篇文章一個字串)，因此不須經過額外處理。其它變項不須斷詞處理，因此在此不加細談。
+
+#### jiebaR::segment
+
+因為`all_post$content`簡單的結構符合`jiebaR`套件的預設需求，但有時資料會比較複雜，因此記錄下來供未來參考。
+
+前面提到`jiebaR::segment`只吃一個句子(一個字串)或文字檔，那如果丟一個 vector 給它會怎樣？答案是看`worker()`的設定：
+```{r}
+library(jiebaR)
+seg <- worker(symbol = T, bylines = F)
+segment(c("妳很漂亮", "我不喜歡你"), seg)
+```
+
+```{r}
+seg <- worker(symbol = T, bylines = T)
+segment(c("妳很漂亮", "我不喜歡你"), seg)
+```
+
+1. `bylines = F`：回傳 1 個 chr vector，其每個元素為 1 個詞。
+
+2. `bylines = T`：回傳 1 個 list，其長度(元素的數量)等於輸入之 vector 的長度，每個元素為一個 chr vector。
+
+
+`bylines = F`的設定在此符合我們的需求，並且為配合`quanteda`套件的特性而將斷詞結果以一個字串(以空格分開字詞)而非一個 chr vector 的形式儲存。
+以下**對第一篇文章進行斷詞**：
+```{r}
+library(jiebaR)
+all_post_seg <- all_post
+seg <- worker(symbol = T, bylines = F)
+
+all_post_seg$content[1] <- all_post$content[1] %>%
+    segment(seg) %>% paste(collapse = " ")
+```
+
+```{r}
+all_post$content[1] %>% str_trunc(20)
+all_post_seg$content[1] %>% str_trunc(30)
+```
+
+要處理所有文章，僅需外包一個 for loop：
+```{r}
+all_post_seg <- all_post
+seg <- worker(symbol = T, bylines = F)
+
+idx <- seq_along(all_post$content)
+for (i in idx){
+    all_post_seg$content[i] <- all_post$content[i] %>%
+        segment(seg) %>% paste(collapse = " ")
+}
+
+head(all_post$content, 3) %>% str_trunc(20)
+head(all_post_seg$content, 3) %>% str_trunc(30)
+```
+
+### 簡轉繁
+
+[OpenCC](https://github.com/BYVoid/OpenCC) 是一個簡體字與繁體字轉換的專案，非常優秀，因為其不僅是單純字轉字，甚至處理了地區性的用法(如「軟體」vs.「软件」)。因此，其簡繁轉換的選項有非常多：
+
+* `s2t.json` Simplified Chinese to Traditional Chinese 簡體到繁體
+* `t2s.json` Traditional Chinese to Simplified Chinese 繁體到簡體
+* `s2tw.json` Simplified Chinese to Traditional Chinese (Taiwan Standard) 簡體到臺灣正體
+* `tw2s.json` Traditional Chinese (Taiwan Standard) to Simplified Chinese 臺灣正體到簡體
+* `s2hk.json` Simplified Chinese to Traditional Chinese (Hong Kong Standard) 簡體到香港繁體（香港小學學習字詞表標準）
+* `hk2s.json` Traditional Chinese (Hong Kong Standard) to Simplified Chinese 香港繁體（香港小學學習字詞表標準）到簡體
+* `s2twp.json` Simplified Chinese to Traditional Chinese (Taiwan Standard) with Taiwanese idiom 簡體到繁體（臺灣正體標準）並轉換爲臺灣常用詞彙
+* `tw2sp.json` Traditional Chinese (Taiwan Standard) to Simplified Chinese with Mainland Chinese idiom 繁體（臺灣正體標準）到簡體並轉換爲中國大陸常用詞彙
+* `t2tw.json` Traditional Chinese (OpenCC Standard) to Taiwan Standard 繁體（OpenCC 標準）到臺灣正體
+* `t2hk.json` Traditional Chinese (OpenCC Standard) to Hong Kong Standard 繁體（OpenCC 標準）到香港繁體（香港小學學習字詞表標準）
+
+[`ropencc`](https://github.com/qinwf/ropencc)套件是 OpenCC 的 R 語言接口，其不在 CRAN 上，需以`devtools`從 GitHub 下載：
+```{r eval=FALSE}
+devtools::install_github("qinwf/ropencc")
+```
+
+使用上非常容易：
+```{r}
+library(ropencc)
+trans <- converter(TW2SP) # 臺灣用法轉大陸用法
+run_convert(trans, "開放中文轉換軟體")
+
+trans <- converter(T2S)   # 單純繁轉簡
+run_convert(trans, "開放中文轉換軟體")
+
+trans <- converter(S2TWP) # 簡轉臺灣用法
+run_convert(trans, "开放中文转换软件")
+```
+
+在此我使用`S2TWP`轉換`$content`；`S2T`轉換`$title`：
+```{r}
+library(ropencc)
+all_post_seg$content <- run_convert(converter(S2TWP),
+                                    all_post_seg$content)
+all_post_seg$title <- run_convert(converter(S2T),
+                                  all_post_seg$title)
+
+head(all_post_seg) %>%
+    mutate(title = str_trunc(title, 8),
+           content = str_trunc(content, 8),
+           links = str_trunc(links, 8),
+           link_text = str_trunc(link_text, 8)) %>%
+    kable("markdown", align = "c")
+```
+
+## quanteda
+
+我們前面進行的資料前處理，已經將資料整理成符合[`quanteda::corpus()`輸入的格式](https://tutorials.quanteda.io/basic-operations/corpus/corpus/)：
+
+> A data frame consisting of a character vector for documents, and additional vectors for document-level variables
+
+因此，依以下指令即可將`all_post_seg`轉換成`corpus`物件：
+```{r}
+library(quanteda)
+corp <- corpus(all_post_seg, 
+               docid_field = "title", 
+               text_field = "content") 
+
+corp %>% summary() %>% as_data_frame() %>% 
+    head(3) %>%
+    mutate(links = str_trunc(links, 8),
+           link_text = str_trunc(link_text, 8)) %>%
+    kable("markdown", align = "c")
+```
+
+有了`corpus`的資料結構後，即進入了下圖`quanteda`的分析架構，也結束了資料前處理的階段，開始進入 EDA 的階段。
+
+```{r echo=FALSE}
+HTML('
+<div class="mermaid">
+    graph TD
+    C(Corpus)
+    token(Tokens)
+    AP["Positional analysis"]
+    AN["Non-positional analysis"]
+    dfm(DFM)
+    tidy("Tidy Text Format")
+    vis("Visualize")
+    C --> token 
+    token --> dfm
+    token -.-> AP
+    dfm -.-> AN
+    tidy -->|"cast_dfm()"| dfm
+    dfm -->|"tidy()"| tidy
+    dfm -.- vis
+    tidy -.-> vis
+    AP -.- vis
+    style C stroke-width:0px,fill:#6bbcff
+    style token stroke-width:0px,fill:#6bbcff
+    style dfm stroke-width:0px,fill:#6bbcff
+    style tidy stroke-width:0px,fill:orange
+    linkStyle 6 stroke-width:0px,fill:none;
+    linkStyle 8 stroke-width:0px,fill:none;
+</div>
+')
+```
+
+
+[quanteda](https://quanteda.io/) 有相當完整的[教學資源](https://tutorials.quanteda.io/)，且有很多有用的函數。同時，[`tidytext`](https://github.com/juliasilge/tidytext) 套件也能輕易與 `quanteda` 配合，在 `document-feature matrix` 與`tidytext`所提倡的 **tidy data frame**(one-token-per-document-per-row) 兩種資料結構間自由轉換。**tidy data frame** 的格式與[`ggplot2`](https://github.com/tidyverse/ggplot2)相吻合，有助於資料視覺化的進行。
+
+這裡選擇以`quanteda`而非`tidytext`作為主要架構的原因在於`tidytext`的架構僅容許 **bag-of-words** 的架構，但`quanteda`除了 **bag-of-words** 之外，還保有 **Positional analysis** 的潛力。
+
+由於篇幅有限，這裡不多加細談`quanteda`套件[^future]。關於`quanteda`的使用，可以參考 [quanteda tutorial](https://tutorials.quanteda.io/)，內容非常詳盡。
+
+[^future]: 未來可能會發一篇續作。
+
+
+## Reproduce
+
+這篇文章的原始碼在我的 [GitHub](https://github.com/liao961120/liao961120.github.io/tree/master/post_source/quanteda-chinese)，歡迎下載至自己的電腦執行。
+
+
+## 參考資料
+
+---
+nocite: |
+  @*
+...

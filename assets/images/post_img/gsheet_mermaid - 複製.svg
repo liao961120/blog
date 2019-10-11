@@ -1,0 +1,350 @@
+<svg id="mermaid-1524061618420" width="100%" xmlns="http://www.w3.org/2000/svg" style="max-width: 586.5859413146973px;" viewBox="0 0 586.5859413146973 1285.21875"><style>
+
+
+#mermaid-1524061618420 .label {
+  font-family: 'trebuchet ms', verdana, arial;
+  color: #333; }
+
+#mermaid-1524061618420 .node rect,
+#mermaid-1524061618420 .node circle,
+#mermaid-1524061618420 .node ellipse,
+#mermaid-1524061618420 .node polygon {
+  fill: #ECECFF;
+  stroke: #9370DB;
+  stroke-width: 1px; }
+
+#mermaid-1524061618420 .node.clickable {
+  cursor: pointer; }
+
+#mermaid-1524061618420 .arrowheadPath {
+  fill: #333333; }
+
+#mermaid-1524061618420 .edgePath .path {
+  stroke: #333333;
+  stroke-width: 1.5px; }
+
+#mermaid-1524061618420 .edgeLabel {
+  background-color: #e8e8e8; }
+
+#mermaid-1524061618420 .cluster rect {
+  fill: #ffffde !important;
+  stroke: #aaaa33 !important;
+  stroke-width: 1px !important; }
+
+#mermaid-1524061618420 .cluster text {
+  fill: #333; }
+
+#mermaid-1524061618420 div.mermaidTooltip {
+  position: absolute;
+  text-align: center;
+  max-width: 200px;
+  padding: 2px;
+  font-family: 'trebuchet ms', verdana, arial;
+  font-size: 12px;
+  background: #ffffde;
+  border: 1px solid #aaaa33;
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 100; }
+
+#mermaid-1524061618420 .actor {
+  stroke: #CCCCFF;
+  fill: #ECECFF; }
+
+#mermaid-1524061618420 text.actor {
+  fill: black;
+  stroke: none; }
+
+#mermaid-1524061618420 .actor-line {
+  stroke: grey; }
+
+#mermaid-1524061618420 .messageLine0 {
+  stroke-width: 1.5;
+  stroke-dasharray: '2 2';
+  marker-end: 'url(#arrowhead)';
+  stroke: #333; }
+
+#mermaid-1524061618420 .messageLine1 {
+  stroke-width: 1.5;
+  stroke-dasharray: '2 2';
+  stroke: #333; }
+
+#mermaid-1524061618420 #arrowhead {
+  fill: #333; }
+
+#mermaid-1524061618420 #crosshead path {
+  fill: #333 !important;
+  stroke: #333 !important; }
+
+#mermaid-1524061618420 .messageText {
+  fill: #333;
+  stroke: none; }
+
+#mermaid-1524061618420 .labelBox {
+  stroke: #CCCCFF;
+  fill: #ECECFF; }
+
+#mermaid-1524061618420 .labelText {
+  fill: black;
+  stroke: none; }
+
+#mermaid-1524061618420 .loopText {
+  fill: black;
+  stroke: none; }
+
+#mermaid-1524061618420 .loopLine {
+  stroke-width: 2;
+  stroke-dasharray: '2 2';
+  marker-end: 'url(#arrowhead)';
+  stroke: #CCCCFF; }
+
+#mermaid-1524061618420 .note {
+  stroke: #aaaa33;
+  fill: #fff5ad; }
+
+#mermaid-1524061618420 .noteText {
+  fill: black;
+  stroke: none;
+  font-family: 'trebuchet ms', verdana, arial;
+  font-size: 14px; }
+
+
+#mermaid-1524061618420 .section {
+  stroke: none;
+  opacity: 0.2; }
+
+#mermaid-1524061618420 .section0 {
+  fill: rgba(102, 102, 255, 0.49); }
+
+#mermaid-1524061618420 .section2 {
+  fill: #fff400; }
+
+#mermaid-1524061618420 .section1,
+#mermaid-1524061618420 .section3 {
+  fill: white;
+  opacity: 0.2; }
+
+#mermaid-1524061618420 .sectionTitle0 {
+  fill: #333; }
+
+#mermaid-1524061618420 .sectionTitle1 {
+  fill: #333; }
+
+#mermaid-1524061618420 .sectionTitle2 {
+  fill: #333; }
+
+#mermaid-1524061618420 .sectionTitle3 {
+  fill: #333; }
+
+#mermaid-1524061618420 .sectionTitle {
+  text-anchor: start;
+  font-size: 11px;
+  text-height: 14px; }
+
+
+#mermaid-1524061618420 .grid .tick {
+  stroke: lightgrey;
+  opacity: 0.3;
+  shape-rendering: crispEdges; }
+
+#mermaid-1524061618420 .grid path {
+  stroke-width: 0; }
+
+
+#mermaid-1524061618420 .today {
+  fill: none;
+  stroke: red;
+  stroke-width: 2px; }
+
+
+
+#mermaid-1524061618420 .task {
+  stroke-width: 2; }
+
+#mermaid-1524061618420 .taskText {
+  text-anchor: middle;
+  font-size: 11px; }
+
+#mermaid-1524061618420 .taskTextOutsideRight {
+  fill: black;
+  text-anchor: start;
+  font-size: 11px; }
+
+#mermaid-1524061618420 .taskTextOutsideLeft {
+  fill: black;
+  text-anchor: end;
+  font-size: 11px; }
+
+
+#mermaid-1524061618420 .taskText0,
+#mermaid-1524061618420 .taskText1,
+#mermaid-1524061618420 .taskText2,
+#mermaid-1524061618420 .taskText3 {
+  fill: white; }
+
+#mermaid-1524061618420 .task0,
+#mermaid-1524061618420 .task1,
+#mermaid-1524061618420 .task2,
+#mermaid-1524061618420 .task3 {
+  fill: #8a90dd;
+  stroke: #534fbc; }
+
+#mermaid-1524061618420 .taskTextOutside0,
+#mermaid-1524061618420 .taskTextOutside2 {
+  fill: black; }
+
+#mermaid-1524061618420 .taskTextOutside1,
+#mermaid-1524061618420 .taskTextOutside3 {
+  fill: black; }
+
+
+#mermaid-1524061618420 .active0,
+#mermaid-1524061618420 .active1,
+#mermaid-1524061618420 .active2,
+#mermaid-1524061618420 .active3 {
+  fill: #bfc7ff;
+  stroke: #534fbc; }
+
+#mermaid-1524061618420 .activeText0,
+#mermaid-1524061618420 .activeText1,
+#mermaid-1524061618420 .activeText2,
+#mermaid-1524061618420 .activeText3 {
+  fill: black !important; }
+
+
+#mermaid-1524061618420 .done0,
+#mermaid-1524061618420 .done1,
+#mermaid-1524061618420 .done2,
+#mermaid-1524061618420 .done3 {
+  stroke: grey;
+  fill: lightgrey;
+  stroke-width: 2; }
+
+#mermaid-1524061618420 .doneText0,
+#mermaid-1524061618420 .doneText1,
+#mermaid-1524061618420 .doneText2,
+#mermaid-1524061618420 .doneText3 {
+  fill: black !important; }
+
+
+#mermaid-1524061618420 .crit0,
+#mermaid-1524061618420 .crit1,
+#mermaid-1524061618420 .crit2,
+#mermaid-1524061618420 .crit3 {
+  stroke: #ff8888;
+  fill: red;
+  stroke-width: 2; }
+
+#mermaid-1524061618420 .activeCrit0,
+#mermaid-1524061618420 .activeCrit1,
+#mermaid-1524061618420 .activeCrit2,
+#mermaid-1524061618420 .activeCrit3 {
+  stroke: #ff8888;
+  fill: #bfc7ff;
+  stroke-width: 2; }
+
+#mermaid-1524061618420 .doneCrit0,
+#mermaid-1524061618420 .doneCrit1,
+#mermaid-1524061618420 .doneCrit2,
+#mermaid-1524061618420 .doneCrit3 {
+  stroke: #ff8888;
+  fill: lightgrey;
+  stroke-width: 2;
+  cursor: pointer;
+  shape-rendering: crispEdges; }
+
+#mermaid-1524061618420 .doneCritText0,
+#mermaid-1524061618420 .doneCritText1,
+#mermaid-1524061618420 .doneCritText2,
+#mermaid-1524061618420 .doneCritText3 {
+  fill: black !important; }
+
+#mermaid-1524061618420 .activeCritText0,
+#mermaid-1524061618420 .activeCritText1,
+#mermaid-1524061618420 .activeCritText2,
+#mermaid-1524061618420 .activeCritText3 {
+  fill: black !important; }
+
+#mermaid-1524061618420 .titleText {
+  text-anchor: middle;
+  font-size: 18px;
+  fill: black; }
+
+#mermaid-1524061618420 g.classGroup text {
+  fill: #9370DB;
+  stroke: none;
+  font-family: 'trebuchet ms', verdana, arial;
+  font-size: 10px; }
+
+#mermaid-1524061618420 g.classGroup rect {
+  fill: #ECECFF;
+  stroke: #9370DB; }
+
+#mermaid-1524061618420 g.classGroup line {
+  stroke: #9370DB;
+  stroke-width: 1; }
+
+#mermaid-1524061618420 .classLabel .box {
+  stroke: none;
+  stroke-width: 0;
+  fill: #ECECFF;
+  opacity: 0.5; }
+
+#mermaid-1524061618420 .classLabel .label {
+  fill: #9370DB;
+  font-size: 10px; }
+
+#mermaid-1524061618420 .relation {
+  stroke: #9370DB;
+  stroke-width: 1;
+  fill: none; }
+
+#mermaid-1524061618420 #compositionStart {
+  fill: #9370DB;
+  stroke: #9370DB;
+  stroke-width: 1; }
+
+#mermaid-1524061618420 #compositionEnd {
+  fill: #9370DB;
+  stroke: #9370DB;
+  stroke-width: 1; }
+
+#mermaid-1524061618420 #aggregationStart {
+  fill: #ECECFF;
+  stroke: #9370DB;
+  stroke-width: 1; }
+
+#mermaid-1524061618420 #aggregationEnd {
+  fill: #ECECFF;
+  stroke: #9370DB;
+  stroke-width: 1; }
+
+#mermaid-1524061618420 #dependencyStart {
+  fill: #9370DB;
+  stroke: #9370DB;
+  stroke-width: 1; }
+
+#mermaid-1524061618420 #dependencyEnd {
+  fill: #9370DB;
+  stroke: #9370DB;
+  stroke-width: 1; }
+
+#mermaid-1524061618420 #extensionStart {
+  fill: #9370DB;
+  stroke: #9370DB;
+  stroke-width: 1; }
+
+#mermaid-1524061618420 #extensionEnd {
+  fill: #9370DB;
+  stroke: #9370DB;
+  stroke-width: 1; }
+
+#mermaid-1524061618420 .commit-id,
+#mermaid-1524061618420 .commit-msg,
+#mermaid-1524061618420 .branch-label {
+  fill: lightgrey;
+  color: lightgrey; }
+</style><style>#mermaid-1524061618420 {
+    color: rgba(0, 0, 0, 0.65);
+    font: normal normal 400 normal 14px / 21px "Monospaced Number", "Chinese Quote", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  }</style><g transform="translate(-12, -12)"><g class="output"><g class="clusters"><g class="cluster" id="subGraph1" transform="translate(485.31250381469727,745.703125)" style="opacity: 1;"><rect width="210.546875" height="672.65625" x="-105.2734375" y="-336.328125"></rect><g class="label"><g transform="translate(0,0)"><foreignObject width="0" height="0"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;"></div></foreignObject></g></g><text x="0" y="-322.328125" fill="black" stroke="none" id="mermaid-1524061618420Text" style="text-anchor: middle;">Google 端</text></g><g class="cluster" id="subGraph0" transform="translate(190.01953315734863,654.609375)" style="opacity: 1;"><rect width="340.03906631469727" height="1269.21875" x="-170.01953315734863" y="-634.609375"></rect><g class="label"><g transform="translate(0,0)"><foreignObject width="0" height="0"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;"></div></foreignObject></g></g><text x="0" y="-620.609375" fill="black" stroke="none" id="mermaid-1524061618420Text" style="text-anchor: middle;">靜態網頁</text></g></g><g class="edgePaths"><g class="edgePath" style="opacity: 1;"><path class="path" d="M236.20312881469727,303.28125L236.20312881469727,356.328125L236.20312881469727,409.375L415.03906631469727,454.63643183920846" marker-end="url(#arrowhead986)" style="stroke: #333; fill:none;stroke-width:2px;stroke-dasharray:3;"></path><defs><marker id="arrowhead986" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="strokeWidth" markerWidth="8" markerHeight="6" orient="auto"><path d="M 0 0 L 0 0 L 0 0 z" style="fill: #333"></path></marker></defs></g><g class="edgePath" style="opacity: 1;"><path class="path" d="M200.1462670812067,121.09375L236.20312881469727,174.140625L236.20312881469727,227.1875" marker-end="url(#arrowhead987)" style="stroke: #333; stroke-width: 3.5px;fill:none"></path><defs><marker id="arrowhead987" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="strokeWidth" markerWidth="8" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" class="arrowheadPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></path></marker></defs></g><g class="edgePath" style="opacity: 1;"><path class="path" d="M148.42405304818783,121.09375L112.36719131469727,174.140625L112.36719131469727,265.234375L112.36719131469727,356.328125L112.36719131469727,409.375L112.36719131469727,472.421875L112.36719131469727,563.515625L112.36719131469727,654.609375L112.36719131469727,745.703125L112.36719131469727,836.796875L112.36719131469727,927.890625L112.36719131469727,1018.984375L112.36719131469727,1082.03125L112.36719131469727,1135.078125L141.30185040560636,1188.125" marker-end="url(#arrowhead988)" style="stroke: #333; stroke-width: 3.5px;fill:none"></path><defs><marker id="arrowhead988" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="strokeWidth" markerWidth="8" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" class="arrowheadPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></path></marker></defs></g><g class="edgePath" style="opacity: 1;"><path class="path" d="M485.31250381469727,510.46875L485.31250381469727,563.515625L485.31250381469727,616.5625" marker-end="url(#arrowhead989)" style="fill:none"></path><defs><marker id="arrowhead989" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="strokeWidth" markerWidth="8" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" class="arrowheadPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></path></marker></defs></g><g class="edgePath" style="opacity: 1;"><path class="path" d="M485.31250381469727,692.65625L485.31250381469727,745.703125L485.31250381469727,798.75" marker-end="url(#arrowhead990)" style="fill:none"></path><defs><marker id="arrowhead990" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="strokeWidth" markerWidth="8" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" class="arrowheadPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></path></marker></defs></g><g class="edgePath" style="opacity: 1;"><path class="path" d="M485.31250381469727,874.84375L485.31250381469727,927.890625L485.31250381469727,980.9375" marker-end="url(#arrowhead991)" style="fill:none"></path><defs><marker id="arrowhead991" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="strokeWidth" markerWidth="8" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" class="arrowheadPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></path></marker></defs></g><g class="edgePath" style="opacity: 1;"><path class="path" d="M485.31250381469727,1057.03125L485.31250381469727,1082.03125L236.20312881469727,1135.078125L193.02406443862523,1188.125" marker-end="url(#arrowhead992)" style="fill:none"></path><defs><marker id="arrowhead992" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="strokeWidth" markerWidth="8" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" class="arrowheadPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></path></marker></defs></g></g><g class="edgeLabels"><g class="edgeLabel" transform="translate(236.20312881469727,356.328125)" style="opacity: 1;"><g transform="translate(-32.296875,-28.046875)" class="label"><foreignObject width="64.6077880859375" height="56.100006103515625"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;"><span class="edgeLabel">iframe</span></div></foreignObject></g></g><g class="edgeLabel" transform="translate(236.20312881469727,174.140625)" style="opacity: 1;"><g transform="translate(-21.265625,-28.046875)" class="label"><foreignObject width="42.5390625" height="56.100006103515625"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;"><span class="edgeLabel">First</span></div></foreignObject></g></g><g class="edgeLabel" transform="translate(112.36719131469727,654.609375)" style="opacity: 1;"><g transform="translate(-37.625,-28.046875)" class="label"><foreignObject width="75.2554931640625" height="56.100006103515625"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;"><span class="edgeLabel">Second</span></div></foreignObject></g></g><g class="edgeLabel" transform="translate(485.31250381469727,563.515625)" style="opacity: 1;"><g transform="translate(-46.1953125,-28.046875)" class="label"><foreignObject width="92.4000244140625" height="56.100006103515625"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;"><span class="edgeLabel">自動連結</span></div></foreignObject></g></g><g class="edgeLabel" transform="translate(485.31250381469727,745.703125)" style="opacity: 1;"><g transform="translate(-84.8046875,-28.046875)" class="label"><foreignObject width="169.6148681640625" height="56.100006103515625"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;"><span class="edgeLabel">IMPORTRANGE()</span></div></foreignObject></g></g><g class="edgeLabel" transform="translate(485.31250381469727,927.890625)" style="opacity: 1;"><g transform="translate(-84.8046875,-28.046875)" class="label"><foreignObject width="169.6148681640625" height="56.100006103515625"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;"><span class="edgeLabel">IMPORTRANGE()</span></div></foreignObject></g></g><g class="edgeLabel" transform="translate(236.20312881469727,1135.078125)" style="opacity: 1;"><g transform="translate(-79.375,-28.046875)" class="label"><foreignObject width="158.76092529296875" height="56.100006103515625"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;"><span class="edgeLabel">R 語言讀取資料</span></div></foreignObject></g></g></g><g class="nodes"><g class="node" id="Form" transform="translate(485.31250381469727,472.421875)" style="opacity: 1;"><rect rx="5" ry="5" x="-70.2734375" y="-38.046875" width="140.546875" height="76.09375" style="fill:#8b64ce;"></rect><g class="label" transform="translate(0,0)"><g transform="translate(-60.2734375,-28.046875)"><foreignObject width="120.5531005859375" height="56.100006103515625"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;">google 表單</div></foreignObject></g></g></g><g class="node" id="sheet" transform="translate(485.31250381469727,654.609375)" style="opacity: 1;"><rect rx="5" ry="5" x="-56.1953125" y="-38.046875" width="112.390625" height="76.09375" style="fill:#1FA463;"></rect><g class="label" transform="translate(0,0)"><g transform="translate(-46.1953125,-28.046875)"><foreignObject width="92.4000244140625" height="56.100006103515625"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;">表單回應</div></foreignObject></g></g></g><g class="node" id="sheet2" transform="translate(485.31250381469727,836.796875)" style="opacity: 1;"><rect rx="5" ry="5" x="-56.1953125" y="-38.046875" width="112.390625" height="76.09375" style="fill:#1FA463;"></rect><g class="label" transform="translate(0,0)"><g transform="translate(-46.1953125,-28.046875)"><foreignObject width="92.4000244140625" height="56.100006103515625"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;">運算分析</div></foreignObject></g></g></g><g class="node" id="sheet3" transform="translate(485.31250381469727,1018.984375)" style="opacity: 1;"><rect rx="5" ry="5" x="-56.1953125" y="-38.046875" width="112.390625" height="76.09375" style="fill:#1FA463;"></rect><g class="label" transform="translate(0,0)"><g transform="translate(-46.1953125,-28.046875)"><foreignObject width="92.4000244140625" height="56.100006103515625"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;">運算結果</div></foreignObject></g></g></g><g class="node" id="dc" transform="translate(162.05469131469727,1226.171875)" style="opacity: 1;"><rect rx="5" ry="5" x="-92.109375" y="-38.046875" width="184.21875" height="76.09375" style="fill:#08A8D0;"></rect><g class="label" transform="translate(0,0)"><g transform="translate(-82.109375,-28.046875)"><foreignObject width="164.2265625" height="56.100006103515625"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;">DataCamp Light</div></foreignObject></g></g></g><g class="node" id="link" transform="translate(236.20312881469727,265.234375)" style="opacity: 1;"><rect rx="5" ry="5" x="-88.8359375" y="-38.046875" width="177.671875" height="76.09375" style="fill:#DDAA54;"></rect><g class="label" transform="translate(0,0)"><g transform="translate(-78.8359375,-28.046875)"><foreignObject width="157.6781005859375" height="56.100006103515625"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;">表單 連結/內嵌</div></foreignObject></g></g></g><g class="node" id="user" transform="translate(174.28516006469727,83.046875)" style="opacity: 1;"><rect rx="5" ry="5" x="-44.6484375" y="-38.046875" width="89.296875" height="76.09375" style="fill:#FFFFFF;"></rect><g class="label" transform="translate(0,0)"><g transform="translate(-34.6484375,-28.046875)"><foreignObject width="69.29998779296875" height="56.100006103515625"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;">使用者</div></foreignObject></g></g></g></g></g></g></svg>

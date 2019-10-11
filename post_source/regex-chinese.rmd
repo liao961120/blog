@@ -1,0 +1,74 @@
+---
+link-citations: yes
+output:
+  html_fragment:
+    self_contained: true
+    includes:
+    number_sections: no
+---
+<!--For external images, set self_contained: false-->
+
+<!--yaml
+---
+layout: post
+mermaid: false
+mathjax2: false
+mathjax: false
+highlight: true
+title: "Advanced Regex in stringr"
+description: "Advanced Regex in stringr"
+tags: [R]
+---
+yaml-->
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	fig.dim = c(7, 4),
+	message = FALSE,
+	warning = FALSE,
+	comment = "",
+	#fig.path = "../../assets/",
+	out.width = "100%"
+)
+library(knitr)
+```
+
+
+
+
+<!--more-->
+
+```{r}
+library(stringr)
+str_match("中文", "\\p{Ideographic}{2}")
+```
+
+
+
+## Conditional Matching
+
+### Condition on 'After'
+- `<Pattern 1>(?=<Pattern 2>)`: Matches Pattern 1 only if Pattern 2 follows Pattern 1.
+
+- `<Pattern 1>(?!<Pattern 2>)`: Matches Pattern 1 only if Pattern 2 **doesn't follow** Pattern 1.
+
+```{r}
+x <- c("1" ,"1 piece", "2 pieces", "3 piles", "4 herds")
+str_extract(x, "\\d+(?= pieces?)")
+str_extract(x, "\\d+(?! pieces?)")
+```
+
+### Condition on 'Before'
+
+- `(?<=<Pattern 1>)<Pattern 2>`: Matches Pattern 2 only if Pattern 1 exists ahead of Pattern 2.
+
+
+- `(?<!<Pattern 1>)<Pattern 2>`: Matches Pattern 2 only if Pattern 1 **doesn't exist** ahead of Pattern 2.
+
+```{r}
+y <- c("100", "$400", "400$")
+str_extract(y, "(?<=\\$)\\d{3,}")
+str_extract(y, "(?<!\\$)\\d{3,}")
+```
+

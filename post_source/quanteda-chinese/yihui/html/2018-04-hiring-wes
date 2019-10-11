@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <title>语言圣战的终结？ - Yihui Xie | 谢益辉</title>
+    <meta property="og:title" content="语言圣战的终结？ - Yihui Xie | 谢益辉">
+    
+    <meta name="twitter:card" content="summary">
+
+    
+      
+    
+
+    
+      
+      <meta property="description" content="一直以来我都以小人之心认为所谓的 Jupyter 只是 juPYter，即：它生于 Python 社区，用户基本也是以 Python 为主；去 Jupyter 大会看一眼演讲便知，几乎清一色 Python，没几个 R 或 Julia 演讲。而其带头大哥实在太能画饼，我看他的演讲和文章，感到实在望尘莫及。这种融合多种语言的方式总让我觉得不够彻底。今日敝厂宣布了一个惊天消息：我们要和 Wes &amp;hellip;">
+      <meta property="og:description" content="一直以来我都以小人之心认为所谓的 Jupyter 只是 juPYter，即：它生于 Python 社区，用户基本也是以 Python 为主；去 Jupyter 大会看一眼演讲便知，几乎清一色 Python，没几个 R 或 Julia 演讲。而其带头大哥实在太能画饼，我看他的演讲和文章，感到实在望尘莫及。这种融合多种语言的方式总让我觉得不够彻底。今日敝厂宣布了一个惊天消息：我们要和 Wes &amp;hellip;">
+      
+    
+
+    
+    
+    
+    <meta name="twitter:image" content="https://yihui.name/images/logo.png">
+    
+    
+
+    
+
+    
+    
+
+    <link rel='stylesheet' href='https://d33wubrfki0l68.cloudfront.net/bundles/175e6b890d45127f0a41cca38797aa2b47bffb50.css'/>
+    
+    
+<script async src='https://d33wubrfki0l68.cloudfront.net/js/fc337d56a4a439ad008258a26ae805d68f352def/js/load-typekit.js'></script>
+
+
+<link rel='stylesheet' href='https://d33wubrfki0l68.cloudfront.net/css/ffa31e9e1d47e75fd5d8c32ff6db8890d1131439/css/custom.css'/>
+
+  </head>
+
+  
+  <body class="cn">
+    <header class="masthead">
+      
+
+<h1><a href="/"><img src="https://d33wubrfki0l68.cloudfront.net/42023922872cca83b20851f15088d1fd4236d084/e41a8/images/logo.png" alt="Yihui Xie" /></a></h1>
+
+
+
+      <nav class="menu">
+  <ul>
+  
+  
+  <li><a href="/">首页</a></li>
+  
+  <li><a href="/cn/about/">关于</a></li>
+  
+  <li><a href="/cn/">博客</a></li>
+  
+  <li><a href="/cn/vitae/">简历</a></li>
+  
+  <li><a href="/cn/recipe/">菜谱</a></li>
+  
+  <li><a href="/en/">English</a></li>
+  
+  
+
+<li class="menu-extra"></li>
+
+
+
+<li><a href="https://github.com/rbind/yihui/edit/master/content/cn/2018-04-19-hiring-wes.md" target="_blank">编辑</a></li>
+
+
+<li><a href="/cn/index.xml" type="application/rss+xml" title="RSS feed">订阅</a></li>
+
+<li><a href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="Attribution-NonCommercial-ShareAlike 4.0 International">版权</a></li>
+
+
+  </ul>
+</nav>
+
+    </header>
+
+    <article class="main">
+      <header class="title">
+      
+<h1>语言圣战的终结？</h1>
+
+
+<h3>谢益辉 / 
+2018-04-19</h3>
+
+<hr>
+
+
+      </header>
+
+
+
+<p>一直以来我都以小人之心认为所谓的 Jupyter 只是 juPYter，即：它生于 Python 社区，用户基本也是以 Python 为主；去 Jupyter 大会看一眼演讲便知，几乎清一色 Python，没几个 R 或 Julia 演讲。而其带头大哥实在太能画饼，我看他的演讲和文章，感到实在望尘莫及。这种融合多种语言的方式总让我觉得不够彻底。今日敝厂宣布了一个<a href="https://blog.rstudio.com/2018/04/19/arrow-and-beyond/">惊天消息</a>：我们要和 Wes McKinney 一起合作开发一种新的数据格式。混蟒蛇社区的人都知道，他是著名的 Pandas 的原作者；RStudio 竟然掏腰包给蟒蛇社区超级大哥大付工资搞开发？</p>
+
+<p>本码畜为敝厂这一举动感到骄傲。这才是真正的压缩<a href="/cn/2018/03/identity/">自我标签</a>的行为。当然，RStudio 的根基仍然是 R，这一点不会变；作为一个把大部分人力都奉献给开源的创业公司，这几年能撇开风投自给自足活下来，已经是个奇迹；现在还要在开源之路上再大跨一步。</p>
+
+<p>如果这事儿能成，再过几年我们就可以轻松在普通笔记本上分析上百 G 数据了，麻麻再也不用担心我们的个人电脑内存不够用。</p>
+
+
+  <footer>
+  
+<nav class="post-nav">
+  <span class="nav-prev">&larr; <a href="/cn/2018/04/write-a-textbook/">写教材</a></span>
+  <span class="nav-next"><a href="/cn/2018/04/r-markdown-ppt/">用 R Markdown 做 PPT</a> &rarr;</span>
+</nav>
+<script type="text/javascript">
+document.addEventListener('keyup', function(e) {
+  if (e.target.nodeName.toUpperCase() != 'BODY') return;
+  var url = false;
+  if (e.which == 37) {  
+    
+    url = '\/cn\/2018\/04\/write-a-textbook\/';
+    
+  } else if (e.which == 39) {  
+    
+    url = '\/cn\/2018\/04\/r-markdown-ppt\/';
+    
+  }
+  if (url) window.location = url;
+});
+</script>
+
+
+
+<section class="comments">
+  <div id="disqus_thread"></div>
+  <script>
+  var disqus_config = function () {
+  
+    this.page.url = "http:\/\/yihui.name" + location.pathname;
+  
+  };
+  (function() {
+    var inIFrame = function() {
+      var iframe = true;
+      try { iframe = window.self !== window.top; } catch (e) {}
+      return iframe;
+    };
+    if (inIFrame()) return;
+    var disqus_js = '//yihui.disqus.com/embed.js';
+    var d = document, s = d.createElement('script');
+    s.src = disqus_js; s.async = true;
+    s.setAttribute('data-timestamp', +new Date());
+    var b = false, l = function() {
+      if (b) return;
+      (d.head || d.body).appendChild(s); b = true;
+    }
+    
+    if (location.hash.match(/^#comment/)) return(l());
+    var t = d.getElementById('disqus_thread');
+    var c = function() {
+      if (b) return;
+      var rect = t.getBoundingClientRect();
+      if (rect.top < window.innerHeight && rect.bottom >= 0) l();
+    };
+    window.addEventListener('load', c);
+    d.addEventListener('scroll', c);
+  })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+
+
+<script async src='https://d33wubrfki0l68.cloudfront.net/bundles/0c869cda57dbf381b70ed47277047b39f091d8e5.js'></script>
+
+
+
+
+  
+
+  
+  <hr>
+  <div class="copyright">&copy; <a href="/">Yihui Xie</a> 2005 - 2018</div>
+  
+  </footer>
+  </article>
+  
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-1988641-2', 'auto');
+ga('send', 'pageview');
+</script>
+
+  </body>
+</html>
+

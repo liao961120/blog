@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <title>社交媒体与抑郁 - Yihui Xie | 谢益辉</title>
+    <meta property="og:title" content="社交媒体与抑郁 - Yihui Xie | 谢益辉">
+    
+    <meta name="twitter:card" content="summary">
+
+    
+      
+    
+
+    
+      
+      <meta property="description" content="有一位圣地亚哥州立大学心理学教授基于数据分析称《青少年心理健康恶化的原因可能是社交媒体》。在这篇文章发表的同一天，牛津大学的一位心理学家驳斥了她的结论，并在几个月前写了一篇文章称《社交媒体不像吸毒》。
+我认同这位牛津心理学家对圣地亚哥心理学教授的数据分析的反驳，我认为这是很标准的科学研究范式，值得学习；即使主观看法再强烈，也不要强行用数据来确认自己的成见。社交媒体是否导致青少年抑郁（以及自杀倾 &amp;hellip;">
+      <meta property="og:description" content="有一位圣地亚哥州立大学心理学教授基于数据分析称《青少年心理健康恶化的原因可能是社交媒体》。在这篇文章发表的同一天，牛津大学的一位心理学家驳斥了她的结论，并在几个月前写了一篇文章称《社交媒体不像吸毒》。
+我认同这位牛津心理学家对圣地亚哥心理学教授的数据分析的反驳，我认为这是很标准的科学研究范式，值得学习；即使主观看法再强烈，也不要强行用数据来确认自己的成见。社交媒体是否导致青少年抑郁（以及自杀倾 &amp;hellip;">
+      
+    
+
+    
+    
+    
+    <meta name="twitter:image" content="https://yihui.name/images/logo.png">
+    
+    
+
+    
+
+    
+    
+
+    <link rel='stylesheet' href='https://d33wubrfki0l68.cloudfront.net/bundles/175e6b890d45127f0a41cca38797aa2b47bffb50.css'/>
+    
+    
+<script async src='https://d33wubrfki0l68.cloudfront.net/js/fc337d56a4a439ad008258a26ae805d68f352def/js/load-typekit.js'></script>
+
+
+<link rel='stylesheet' href='https://d33wubrfki0l68.cloudfront.net/css/ffa31e9e1d47e75fd5d8c32ff6db8890d1131439/css/custom.css'/>
+
+  </head>
+
+  
+  <body class="cn">
+    <header class="masthead">
+      
+
+<h1><a href="/"><img src="https://d33wubrfki0l68.cloudfront.net/42023922872cca83b20851f15088d1fd4236d084/e41a8/images/logo.png" alt="Yihui Xie" /></a></h1>
+
+
+
+      <nav class="menu">
+  <ul>
+  
+  
+  <li><a href="/">首页</a></li>
+  
+  <li><a href="/cn/about/">关于</a></li>
+  
+  <li><a href="/cn/">博客</a></li>
+  
+  <li><a href="/cn/vitae/">简历</a></li>
+  
+  <li><a href="/cn/recipe/">菜谱</a></li>
+  
+  <li><a href="/en/">English</a></li>
+  
+  
+
+<li class="menu-extra"></li>
+
+
+
+<li><a href="https://github.com/rbind/yihui/edit/master/content/cn/2018-02-09-social-media-depression.md" target="_blank">编辑</a></li>
+
+
+<li><a href="/cn/index.xml" type="application/rss+xml" title="RSS feed">订阅</a></li>
+
+<li><a href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="Attribution-NonCommercial-ShareAlike 4.0 International">版权</a></li>
+
+
+  </ul>
+</nav>
+
+    </header>
+
+    <article class="main">
+      <header class="title">
+      
+<h1>社交媒体与抑郁</h1>
+
+
+<h3>谢益辉 / 
+2018-02-09</h3>
+
+<hr>
+
+
+      </header>
+
+
+
+<p>有一位圣地亚哥州立大学心理学教授基于数据分析称《<a href="https://theconversation.com/with-teen-mental-health-deteriorating-over-five-years-theres-a-likely-culprit-86996">青少年心理健康恶化的原因可能是社交媒体</a>》。在这篇文章发表的同一天，牛津大学的一位心理学家<a href="https://medium.com/@OrbenAmy/social-media-and-suicide-a-critical-appraisal-f95e0bbd4660">驳斥了她的结论</a>，并在几个月前写了一篇文章称《<a href="https://theconversation.com/social-media-is-nothing-like-drugs-despite-all-the-horror-stories-79382">社交媒体不像吸毒</a>》。</p>
+
+<p>我认同这位牛津心理学家对圣地亚哥心理学教授的数据分析的反驳，我认为这是很标准的科学研究范式，值得学习；即使主观看法再强烈，也不要强行用数据来确认自己的成见。社交媒体是否导致青少年抑郁（以及自杀倾向），从这个反驳中来看，似乎数据并不能很好支持。然而我仍然相信社交媒体的负面作用大于正面作用，我觉得这件事从上述数据中很难得到结论，原因是受访学生对自身精神状况的评估可能严重有偏，根本原因在于社交媒体的成瘾性。那些成瘾的青少年可能觉得在社交媒体里玩得很快活，反而觉得社交媒体有助于改善他们的心理状况。要是调查一下吸毒者，他们十之八九也会觉得毒品让自己很快活。</p>
+
+<p>那我们应该收集怎样的数据呢？我觉得应该收集一些更客观的指标，例如睡眠时间和质量、作业时长和质量、看书时长（不一定是纸书，主要是测量注意力集中的能力）、以及对外部社会有积极意义的行为的次数、时间等（如志愿者活动）。这样来看孩子们是否在沦为离开手机屏幕就活不了的废柴；就算他们现在自己说自己玩得很嗨，那也可能只是很嗨的废柴，等到这个社会需要他们干正事、或者他们自己到了需要养活自己的时候，就会意识到戒除这个社交媒体瘾的痛苦，毕竟社交媒体不能吃，最终还得靠自己的劳动创造价值之后才能吃饭，而劳动通常不会有什么快感或新鲜感，真正的抑郁恐怕要到那个时候才会出现。</p>
+
+
+  <footer>
+  
+<nav class="post-nav">
+  <span class="nav-prev">&larr; <a href="/cn/2018/02/ninety-posts/">来九十篇</a></span>
+  <span class="nav-next"><a href="/cn/2018/02/cohen-s-d/">Cohen&#39;s d</a> &rarr;</span>
+</nav>
+<script type="text/javascript">
+document.addEventListener('keyup', function(e) {
+  if (e.target.nodeName.toUpperCase() != 'BODY') return;
+  var url = false;
+  if (e.which == 37) {  
+    
+    url = '\/cn\/2018\/02\/ninety-posts\/';
+    
+  } else if (e.which == 39) {  
+    
+    url = '\/cn\/2018\/02\/cohen-s-d\/';
+    
+  }
+  if (url) window.location = url;
+});
+</script>
+
+
+
+<section class="comments">
+  <div id="disqus_thread"></div>
+  <script>
+  var disqus_config = function () {
+  
+    this.page.url = "http:\/\/yihui.name" + location.pathname;
+  
+  };
+  (function() {
+    var inIFrame = function() {
+      var iframe = true;
+      try { iframe = window.self !== window.top; } catch (e) {}
+      return iframe;
+    };
+    if (inIFrame()) return;
+    var disqus_js = '//yihui.disqus.com/embed.js';
+    var d = document, s = d.createElement('script');
+    s.src = disqus_js; s.async = true;
+    s.setAttribute('data-timestamp', +new Date());
+    var b = false, l = function() {
+      if (b) return;
+      (d.head || d.body).appendChild(s); b = true;
+    }
+    
+    if (location.hash.match(/^#comment/)) return(l());
+    var t = d.getElementById('disqus_thread');
+    var c = function() {
+      if (b) return;
+      var rect = t.getBoundingClientRect();
+      if (rect.top < window.innerHeight && rect.bottom >= 0) l();
+    };
+    window.addEventListener('load', c);
+    d.addEventListener('scroll', c);
+  })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+
+
+<script async src='https://d33wubrfki0l68.cloudfront.net/bundles/0c869cda57dbf381b70ed47277047b39f091d8e5.js'></script>
+
+
+
+
+  
+
+  
+  <hr>
+  <div class="copyright">&copy; <a href="/">Yihui Xie</a> 2005 - 2018</div>
+  
+  </footer>
+  </article>
+  
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-1988641-2', 'auto');
+ga('send', 'pageview');
+</script>
+
+  </body>
+</html>
+
